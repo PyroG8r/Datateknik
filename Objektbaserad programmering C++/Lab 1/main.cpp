@@ -3,6 +3,7 @@
     2022-03-24
     Objektbaserad programmering
     Lab 1 - Structs
+    TESTING
 */
 #include <iostream>
 #include <fstream>

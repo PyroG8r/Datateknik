@@ -1,0 +1,45 @@
+/* filnamn: styles.css
+Skrivet av: Emil Jons
+Skapat datum: 2021-10-5
+Senast ändrat: 2021-10-12
+Kurs: Grundläggande Datavetenskap
+Handledare: Nayeb Maleki
+Beskrivning: CSS för att stila html sidorna */
+
+body {
+    background-color: rgb(31, 31, 31);                                              /*Anger bakgrundsfärgen för hela sidan */
+    font-family: roboto;                                                              /*Anger typsnittet för hela sidan*/
+    font-size: 13px;                                                                  /*Anger hur stor texten ska vara i detta fall 13px*/
+    padding-top: 5px;                                                                 /*Utfyllnad på toppen som används*/
+    margin-left: 20%;                                                                 /*Anger hur mycket utrymme på vänster sida av sidan som ska vara tomt*/
+    margin-right: 20%;                                                                /*Samma fast för höger*/
+}
+
+h1 {
+    padding: 5px;                                                                     /*Utfyllnad som används på toppen*/
+    background-color: rgb(41, 41, 41);                                              /*Bakgrundsfärg för h1 elementet*/
+    outline-color: rgb(57, 57, 57);                                                 /*Färg på konturen som omringar h1*/
+    filter: drop-shadow(3px 3px 1px rgb(57,57,57));                                 /*För att få skugga med en viss färg, anger även hur långt ifrån samt hur suddig den är*/
+    text-shadow: 1px 1px 3px rgb(87, 84, 87);  /* */                                /*Skugga för texten som finns i h1, Anger färg hur långt ifrån samt hur suddig den ska vara*/
+    outline-width: 2px;                                                               /*Hur bred konturen runt h1 ska vara*/
+    outline-style: solid;                                                             /*Att konturen ska vara en heldragen linje*/
+    border-radius: 3pt;                                                               /*Gär att konturens kanter blir avrundade en aning*/
+    text-align: center;                                                               /*Texten hamnar i mitten av sidan*/
+    color: rgb(255, 255, 255);                                                      /*Färgen på texten */
+    margin-bottom: 60px;                                                              /*Hur mycket utrymme under h1 som ska lämnas tomt*/
+}
+p {
+    padding: 5px;                                                                    /*Hur mycket utfyllnad runt p som ska användas*/
+    outline-color: rgb(57, 57, 57);                                                /*Färg på konturen runt p*/
+    outline-width: 2px;                                                              /*Konturens tjocklek*/
+    outline-style: solid;                                                            /*Konturen ska vara heldragen*/
+    border-radius: 3pt;                                                              /*Gär att konturens kanter blir avrundade en aning*/
+    color: silver;                                                                 /*Färgen på texten */
+    white-space: pre-line;                                                           /*Hur textwrap ska hanteras, ny rad i koden blir ny rad i*/
+}
+
+
+a:link {  color: #ffc0cb; text-decoration: none; }                                /*Bestämmer hur en länk ska se ut, vilken färg den har */
+a:visited { color: #ffc0cb; text-decoration: none; }                              /*Bestämmer hur en länk ser ut när användaren redan har besäkt länken en gång */
+a:hover { color: rgb(252, 210, 250); text-decoration: underline; }                /*ser ut när användaren håller musen öven länken */
+a:active { color: rgb(255, 187, 0); text-decoration: underline; }                 /*ser ut när användaren trycker på länken */

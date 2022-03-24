@@ -1,0 +1,29 @@
+<!-- filnamn: kontaktinfo.html
+Skrivet av: Emil Jons
+Skapat datum: 2021-10-5
+Senast ändrat: 2021-10-12
+Kurs: Grundläggande Datavetenskap
+Handledare: Nayeb Maleki
+Beskrivning: Html för startsidan -->
+
+<!DOCTYPE html>														<!--Används i alla html filer-->
+<html lang="sv">													<!-- Säger åt webläsaren att hemsidan är på svenska, vilket den använder för autokorrekering osv... -->
+	<head>															<!--Head är en kontainer för metadata-->
+		<meta charset = "UTF-8" />									<!-- Sätter teckenkodningen till UTF-8 -->
+		<meta name="viewport" content="width=device-width, initial-scale=1 "> <!-- Anpassar sidan bättre till mobilformat. -->
+		<link rel="stylesheet" href="styles.css">					<!--Använder sig av ett externa stylesheet, som heter styles.css-->
+		<title>Start Sida</title>									<!--Titeln som visas i webläsarens tabbar-->
+	</head>
+
+	<body>
+		<h1>Välkommen till Emils hemsida!</h1>						<!--Header, Det som visar högst upp på sidan-->
+
+		<p> Hej du kommit til Emil's hemsida!						<!--Brödtext som ger lite information-->
+			tryck på länken nedan för att gå vidare till mera information. 		<!--Mera brödtext på en ny rad, tack vare en kodrad i css filen: white-space: pre-line;-->
+			
+			<a href="kontaktinfo.html"> Kontaktinfo </a>			<!-- Länkar till en annan html fil som öppnas när man trycker på länken -->
+			<img src="profil.jpg" alt="Profilbild" width="70" height="70">   		<!-- En bild-tag som använders sig av den lokala bilden "profil.jpg" och skalar om den till mindre. -->
+		</p>
+
+	</body>		
+</html>

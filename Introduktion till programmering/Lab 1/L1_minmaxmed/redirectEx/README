@@ -1,0 +1,27 @@
+# Omdirigering av strömmar
+
+matte.cpp innehåller källkod till ett enkelt program somm adderar och multiplicerar 2 tal, men det är inte poängen.
+
+Kör make och testa programmet
+    $ make
+    $ ./matte
+
+Kör programmet med en redirect från filen in.txt till programmet matte:
+    $ ./matte < in.txt
+
+Ok, titta i filen in.txt.
+Prova att ändra värden i in.txt, kör igen.
+
+Testa med en redirect från programmet matte till filen ut.txt:
+    $ ./matte > ut.txt
+
+Det bör nu ha dykt upp en ny fil som heter ut.txt. (Om den inte redan fanns förstås.).
+Titta i den.
+
+Testa båda på en gång. (Ta först bort ut.txt)
+    $ ./matte < in.txt > ut.txt
+Titta i filen ut.txt igen.
+
+# Poängen
+Med redirect kan man styra om strömmarna till och från ett program.
+Se vidare https://en.wikipedia.org/wiki/Redirection_(computing)

@@ -14,7 +14,7 @@ struct Adress {
     string street,city;
     int zip;
 };
-//This is a test
+//This is a test 2
 struct Person {
     string name, id;
     Adress location;

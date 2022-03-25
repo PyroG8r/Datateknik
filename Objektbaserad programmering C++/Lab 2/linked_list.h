@@ -17,7 +17,7 @@ class linked_list {
 
     // inserting elements
     void insert(double value, size_t pos);
-    void push_front(double value );
+    void push_front(double value);
     void push_back(double value);
 
     // accessing elements
@@ -37,8 +37,8 @@ class linked_list {
     // output
     void print() const;
     void print_reverse() const;
-    private :
-    struct node {
+    private:
+    struct node{
         node(double value); // konstruktor för noden
         double value;
         node* next;

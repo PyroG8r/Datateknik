@@ -8,11 +8,20 @@ linked_list::linked_list(){
     tail = nullptr;
 }
 
-linked_list::node::node(double value) {
-    this->value = value;
-    next = nullptr;
-    prev = nullptr;
+//inserting elements
+void linked_list::push_back(double value){
+    node* N = new node(value);
+    if(is_empty()){
+        head = N;
+        tail = N;
+    }
+    else {
+        N->next = tail;
+        tail->prev = N;
+        tail = N;
+    }
 }
+
 
 bool linked_list::is_empty() const{
     if(head == nullptr && tail == nullptr){
@@ -22,7 +31,6 @@ bool linked_list::is_empty() const{
         return false;
     }
 }
-
 size_t linked_list::size() const{
     size_t node_counter = 0;
 
@@ -36,10 +44,10 @@ size_t linked_list::size() const{
     else {
         return node_counter;
     }
-
-
 }
 
-void linked_list::push_back(double value){
-
+linked_list::node::node(double value) {
+    this->value = value;
+    next = nullptr;
+    prev = nullptr;
 }

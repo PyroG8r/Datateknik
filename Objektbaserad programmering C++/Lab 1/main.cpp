@@ -120,12 +120,14 @@ std::istream &operator>> (std::istream &in, Person &p){
     if(in.eof()){   // Kontrollerar om filen är slut för att inte fortstätta
         return in;
     }
+    // if (!adress.empty()){
+
     pos = adress.find(",");         //hittar comma tecknet för att utgå ifrån det i extraheringen av adressen
     street = adress.substr(0, pos); //från början till comma
     zip = adress.substr(pos+2, 6);  //från comma + 2 till slut av zip koden
     zip.erase(zip.begin()+3);       // tar bort mellanrummer i zipkoden så att ingen information försvinner när den konverteras till en int
     city = adress.substr(pos+10);   //från början av stadsnamnet till slutet av raden
-
+    
     for (int i = 0; i < city.length(); i++){        //for loop för att hitta var statsnamnet slutar
         if (city[i] != ' ')
             pos = i;
@@ -134,7 +136,7 @@ std::istream &operator>> (std::istream &in, Person &p){
 
     p.location.street = street;
     p.location.city = city;
-    p.location.zip = stoi(zip);
+    p.location.zip = std::stoi(zip);
     
     return in;
 }

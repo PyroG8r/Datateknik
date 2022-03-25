@@ -9,50 +9,49 @@
 #include <vector>
 #include <string>
 #include <algorithm>
-using namespace std;
 struct Adress {
-    string street,city;
+    std::string street,city;
     int zip;
 };
 //This is a test 2
 struct Person {
-    string name, id;
+    std::string name, id;
     Adress location;
 
 };
-vector<Person> read_file(string filename);
-size_t find_in_names( const vector <Person>&haystack, string name_part);
-vector <Person> find_person_from_city(const vector <Person>&haystack, string city);
-istream &operator>> (istream & in, Person &p);
-void string_to_lower(string&s);
+std::vector<Person> read_file(std::string filename);
+size_t find_in_names( const std::vector <Person>&haystack, std::string name_part);
+std::vector <Person> find_person_from_city(const std::vector <Person>&haystack, std::string city);
+std::istream &operator>> (std::istream & in, Person &p);
+void string_to_lower(std::string&s);
 
 
 int main(){
-    string filename = "names.txt";
-    vector<Person> persons = read_file(filename);
-    vector<Person> persons_from_city;
+    std::string filename = "names.txt";
+    std::vector<Person> persons = read_file(filename);
+    std::vector<Person> persons_from_city;
     int option;
-    string temp;
-    cout << "1. Sök del av personnamn" << endl << "2. Sök efter personer i stad (endast exakta matchningar)." <<endl << "3. Avsluta" << endl;
-    cin >> option;
+    std::string temp;
+    std::cout << "1. Sök del av personnamn" << std::endl << "2. Sök efter personer i stad (endast exakta matchningar)." << std::endl << "3. Avsluta" << std::endl;
+    std::cin >> option;
     switch(option){
         case 1: 
-            cin.ignore();
-            cout << "Sök del av personnamn." << endl;
-            getline(cin, temp);
-            cout << find_in_names(persons, temp) << endl;
+            std::cin.ignore();
+            std::cout << "Sök del av personnamn." << std::endl;
+            std::getline(std::cin, temp);
+            std::cout << find_in_names(persons, temp) << std::endl;
             break;
         case 2: 
-            cin.ignore();
-            cout << "Sök efter personer i stad(endast exakta matchningar)." << endl;
-            getline(cin, temp);
+            std::cin.ignore();
+            std::cout << "Sök efter personer i stad(endast exakta matchningar)." << std::endl;
+            std::getline(std::cin, temp);
             for (Person p : find_person_from_city(persons,temp)) {
-                cout << p.id << ", " << p.name << ", " << p.location.zip << ", " << p.location.city << endl;
+                std::cout << p.id << ", " << p.name << ", " << p.location.zip << ", " << p.location.city << std::endl;
             }
             break;
         case 3: 
-            cin.ignore();
-            cout << "Avsluta." << endl;
+            std::cin.ignore();
+            std::cout << "Avsluta." << std::endl;
             break;
         default:
             break;
@@ -62,11 +61,11 @@ int main(){
 }
 
 
-vector<Person> read_file(string filename) {
-    ifstream file;
+std::vector<Person> read_file(std::string filename) {
+    std::ifstream file;
     file.open(filename);
     Person person_temp;
-    vector<Person> haystack;    
+    std::vector<Person> haystack;    
     if(file.is_open()){
         file >> person_temp;    //Kör en gång innan loopen för att iterera rätt antal gånger genom filen
         while(!file.eof()){
@@ -76,30 +75,30 @@ vector<Person> read_file(string filename) {
         }
     }
     else{
-        cout << "Kunde inte öppna filen..." << endl;        //Felhantering
+        std::cout << "Kunde inte öppna filen..." << std::endl;        //Felhantering
     }
     file.close();
     return haystack;
 }
 
 
-size_t find_in_names ( const vector < Person >&haystack, string name_part ){
+size_t find_in_names ( const std::vector < Person >&haystack, std::string name_part ){
     size_t nr=0;
-    string temp_name;
+    std::string temp_name;
     for (Person p : haystack){
         temp_name = p.name; //Sätter namnet till en temporär variabel så att inte orginal namnet ändrar formatering
         string_to_lower(temp_name);
         string_to_lower(name_part);
         size_t found=temp_name.find(name_part);
-        if (found!=string::npos)    //Om den inte hittar namnet i strängen kommer "found" vara konstanten "npos"
+        if (found!=std::string::npos)    //Om den inte hittar namnet i strängen kommer "found" vara konstanten "npos"
             nr++;                   //Lägger till ett om "found" är annat än npos
     }
     return nr;
 }
 
-vector<Person>find_person_from_city(const vector <Person>&haystack, string city){
-    vector<Person> person_from_city;    //temporär vector som innehåller alla matchningar
-    string temp_city;   
+std::vector<Person>find_person_from_city(const std::vector <Person>&haystack, std::string city){
+    std::vector<Person> person_from_city;    //temporär vector som innehåller alla matchningar
+    std::string temp_city;   
     for (Person p : haystack){
         temp_city = p.location.city;
         string_to_lower(temp_city);
@@ -111,8 +110,8 @@ vector<Person>find_person_from_city(const vector <Person>&haystack, string city)
     return person_from_city;
 }
 
-istream &operator>> (istream &in, Person &p){
-    string street, zip, city, adress;
+std::istream &operator>> (std::istream &in, Person &p){
+    std::string street, zip, city, adress;
     size_t pos;
 
     getline(in, p.name);        //Läser in första
@@ -140,23 +139,23 @@ istream &operator>> (istream &in, Person &p){
     return in;
 }
 
-void string_to_lower(string&s){
+void string_to_lower(std::string&s){
     size_t pos;
 
     pos=s.find("Ä");        //Letar efter "Ä"
-    while (pos!=string::npos){  //Om "Ä" hittas
+    while (pos!=std::string::npos){  //Om "Ä" hittas
         s.replace(pos, 2, "ä");  //Byt ut "Ä" mot "ä"
         pos=s.find("Ä");    //Letar om det finns nåt mera "Ä"
     }
 
     pos=s.find("Å");    //Samma sak för Å
-    while (pos!=string::npos){
+    while (pos!=std::string::npos){
         s.replace(pos, 2, "å");
         pos=s.find("Å");
     }
 
     pos=s.find("Ö");    //Samma sak för Ö
-    while (pos!=string::npos){
+    while (pos!=std::string::npos){
         s.replace(pos, 2, "ö");
         pos=s.find("Ö");
     }

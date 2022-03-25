@@ -21,6 +21,18 @@ void linked_list::push_back(double value){
         tail = N;
     }
 }
+void linked_list::push_front(double value){
+    node* N = new node(value);
+    if(is_empty()){
+        head = N;
+        tail = N;
+    }
+    else {
+        N->prev = head;
+        head->next = N;
+        head = N;
+    }
+}
 
 
 bool linked_list::is_empty() const{

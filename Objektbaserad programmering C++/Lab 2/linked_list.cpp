@@ -7,6 +7,11 @@ linked_list::linked_list(){
     head = nullptr;
     tail = nullptr;
 }
+linked_list::node::node(double value) {
+    this->value = value;
+    next = nullptr;
+    prev = nullptr;
+}
 
 //inserting elements
 void linked_list::insert(double value, size_t pos){
@@ -27,7 +32,6 @@ void linked_list::insert(double value, size_t pos){
         (ptr->next)->prev = N;
         ptr->next = N;
     }
-
 }
 
 void linked_list::push_back(double value){
@@ -55,15 +59,65 @@ void linked_list::push_front(double value){
     }
 }
 
-
-bool linked_list::is_empty() const{
-    if(head == nullptr && tail == nullptr){
-        return true;
+//accessing elements
+double linked_list::front() const{
+    if(!is_empty()){
+        return head->value;
     }
     else {
-        return false;
+        exit(1);
     }
 }
+
+double linked_list::back() const{
+    if(!is_empty()){
+        return tail->value;
+    }
+    else {
+        exit(1);
+    }
+}
+
+double linked_list::at(size_t pos) const{
+    return (find(pos)->value);
+}
+
+//removing elements
+void linked_list::remove(size_t pos) {
+
+    if(pos == 0){
+        pop_front();
+    }
+    else if(pos == size()){
+        pop_back();
+    }
+    else {
+        node* N = find(pos);
+        N->next->prev=N->prev;
+        N->prev->next=N->next;
+        delete N;
+    }
+}
+
+double linked_list::pop_front(){
+    double val = head->value;
+    node* N = head;
+    head = N->prev;
+    N->prev->next = nullptr;
+    delete N;
+    return val;
+}
+
+double linked_list::pop_back(){
+    double val = tail->value;
+    node* N = tail;
+    tail = N->next;
+    N->next->prev = nullptr;
+    delete N;
+    return val;
+}
+
+//status
 size_t linked_list::size() const{
     size_t node_counter = 0;
 
@@ -78,12 +132,18 @@ size_t linked_list::size() const{
         return node_counter;
     }
 }
-
-linked_list::node::node(double value) {
-    this->value = value;
-    next = nullptr;
-    prev = nullptr;
+bool linked_list::is_empty() const{
+    if(head == nullptr && tail == nullptr){
+        return true;
+    }
+    else {
+        return false;
+    }
 }
+
+
+
+
 
 linked_list::node* linked_list::find(size_t pos) const {
     node* it = head;

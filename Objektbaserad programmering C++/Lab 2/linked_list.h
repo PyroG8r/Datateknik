@@ -22,7 +22,7 @@ class linked_list {
 
     // accessing elements
     double front() const;
-    double back() const ;
+    double back() const;
     double at(size_t pos) const;
     
     

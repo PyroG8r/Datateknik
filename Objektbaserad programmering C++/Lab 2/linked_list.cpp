@@ -1,7 +1,12 @@
+/*
+    Emil Jons
+    2022-03-28
+    Objektbaserad programmering
+    Lab 2 - Linked list
+*/
+
 #include <iostream>
 #include "linked_list.h"
-
-
 
 linked_list::linked_list(){
     head = nullptr;
@@ -18,6 +23,16 @@ linked_list::linked_list(const linked_list &src){
     tail = nullptr;
     
     *this = src;
+}
+
+linked_list::~linked_list(){
+    if(!is_empty()){
+        node* it = head;
+        while(it != nullptr){
+            it = it->prev;
+            pop_front();
+        }
+    }
 }
 
 //assigns lhs to rhs
@@ -52,18 +67,18 @@ linked_list &linked_list::operator+=(const linked_list &rhs){
             it = it->next;
         }
     }
-    // else {
-    //     linked_list temp;
-    //     while(it != nullptr) {
-    //         temp.push_back(it->value);
-    //         it = it->prev;
-    //     }
-    //     it = temp.head;
-    //     while(it != nullptr) {
-    //         push_back(it->value);
-    //         it = it->prev;
-    //     }
-    // }
+    else { // Lägger rhs till en temporär lista
+        linked_list temp;
+        while(it != nullptr) {
+            temp.push_back(it->value);
+            it = it->prev;
+        }
+        it = temp.head; // Sätter ihop temp till "this"
+        while(it != nullptr) {
+            push_back(it->value);
+            it = it->prev;
+        }
+    }
     return *this;
 }
 
@@ -98,6 +113,7 @@ void linked_list::push_back(double value){
         N->next = tail;
         tail->prev = N;
         tail = N;
+        tail->prev = nullptr;
     }
 }
 void linked_list::push_front(double value){
@@ -110,6 +126,7 @@ void linked_list::push_front(double value){
         N->prev = head;
         head->next = N;
         head = N;
+        head->next = nullptr;
     }
 }
 
@@ -119,7 +136,8 @@ double linked_list::front() const{
         return head->value;
     }
     else {
-        exit(1);
+        std::cout << "There are no elements in the list" << std::endl;
+        return NULL;
     }
 }
 
@@ -128,12 +146,30 @@ double linked_list::back() const{
         return tail->value;
     }
     else {
-        exit(1);
+        std::cout << "There are no elements in the list" << std::endl;
+        return NULL;
     }
 }
 
 double linked_list::at(size_t pos) const{
-    return (find(pos)->value);
+    if(!is_empty()){
+        if(size() == 0){
+            std::cout<<"The list is empty..." << std::endl;
+        }
+        else if (pos > size()){
+            std::cout<<"The given position is out of bounds"<<std::endl;
+        }
+        else{
+            return (find(pos)->value);
+        }
+    }
+    else {
+        std::cout << "There are no elements in the list" << std::endl;
+        return NULL;
+    }
+
+
+    // return (find(pos)->value);
 }
 
 //removing elements
@@ -172,8 +208,8 @@ double linked_list::pop_front(){
         return val;
     }
     else{
-        std::cout << "Du kan inte poppa när den är tom" << std::endl;
-        return 0;
+        std::cout << "There are no elements in the list" << std::endl;
+        return NULL;
     }
 }
 
@@ -195,8 +231,8 @@ double linked_list::pop_back(){
         return val;
     }
     else {
-        std::cout << "Du kan inte poppa när den är tom" << std::endl;
-        return 0;
+        std::cout << "There are no elements in the list" << std::endl;
+        return NULL;
     }
 }
 
@@ -231,6 +267,7 @@ void linked_list::print() const{
     for(size_t i = 0; i < size(); i++){
         it = it->prev;
         std::cout << it->value;
+
         if (i == size()-1)
             std::cout << std::endl;
         else {
@@ -245,6 +282,7 @@ void linked_list::print_reverse() const{
     for(size_t i = 0; i < size(); i++){
         it = it->next;
         std::cout << it->value;
+
         if (i == size()-1)
             std::cout << std::endl;
         else {

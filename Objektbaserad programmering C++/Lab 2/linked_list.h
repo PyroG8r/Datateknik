@@ -1,3 +1,10 @@
+/*
+    Emil Jons
+    2022-03-28
+    Objektbaserad programmering
+    Lab 2 - Linked list
+*/
+
 #ifndef LINKED_LIST_H
 #define LINKED_LIST_H
 

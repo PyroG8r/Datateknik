@@ -1,5 +1,12 @@
-#include <iostream>
-#include "linked_list.h"
+/*
+    Emil Jons
+    2022-03-28
+    Objektbaserad programmering
+    Lab 2 - Linked list
+*/
+
+#include "linked_testing.h"
+
 
 int main(){
 

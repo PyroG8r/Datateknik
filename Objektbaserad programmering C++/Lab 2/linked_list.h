@@ -24,8 +24,6 @@ class linked_list {
     double front() const;
     double back() const;
     double at(size_t pos) const;
-    
-    
 
     // removing elements
     void remove(size_t pos);

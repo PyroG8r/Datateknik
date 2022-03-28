@@ -13,6 +13,60 @@ linked_list::node::node(double value) {
     prev = nullptr;
 }
 
+linked_list::linked_list(const linked_list &src){
+    head = nullptr;
+    tail = nullptr;
+    
+    *this = src;
+}
+
+//assigns lhs to rhs
+linked_list &linked_list::operator=(const linked_list &rhs){
+    if (this != &rhs){ //Om lhs och rhs är samma behöver inget hända
+        node* it = rhs.head;
+        if(is_empty()) { //Om om lhs är tom, pusha alla rhs
+            while(it != nullptr){
+                push_back(it->value);
+                it = it->prev;
+            }
+        }
+        else{   // Om lhs inte är tom, töm den och fyll den med rhs
+            while(!is_empty()){
+                pop_front();
+            }
+            while(it != nullptr){
+                push_back(it->value);
+                it = it->prev;
+            }
+        }
+    }
+    return *this;
+}
+
+//appends elements from rhs
+linked_list &linked_list::operator+=(const linked_list &rhs){
+    node* it = rhs.head;
+    if(this != &rhs) { 
+        while(it != nullptr) {
+            push_back(it->value);
+            it = it->next;
+        }
+    }
+    // else {
+    //     linked_list temp;
+    //     while(it != nullptr) {
+    //         temp.push_back(it->value);
+    //         it = it->prev;
+    //     }
+    //     it = temp.head;
+    //     while(it != nullptr) {
+    //         push_back(it->value);
+    //         it = it->prev;
+    //     }
+    // }
+    return *this;
+}
+
 //inserting elements
 void linked_list::insert(double value, size_t pos){
     // if(pos > size() || pos < 0){
@@ -100,21 +154,50 @@ void linked_list::remove(size_t pos) {
 }
 
 double linked_list::pop_front(){
-    double val = head->value;
+    double val;
     node* N = head;
-    head = N->prev;
-    N->prev->next = nullptr;
-    delete N;
-    return val;
+    if (size() == 1){
+        val = head->value;
+        head = nullptr;
+        tail = nullptr;
+        delete N;
+        return val;
+
+    }
+    else if (!is_empty()) {
+        val = head->value;
+        head = N->prev;
+        head->next = nullptr;
+        delete N;
+        return val;
+    }
+    else{
+        std::cout << "Du kan inte poppa när den är tom" << std::endl;
+        return 0;
+    }
 }
 
 double linked_list::pop_back(){
-    double val = tail->value;
+    double val;
     node* N = tail;
-    tail = N->next;
-    N->next->prev = nullptr;
-    delete N;
-    return val;
+    if(size() == 1){
+        val = tail->value;
+        head = nullptr;
+        tail = nullptr;
+        delete N;
+        return val;
+    }
+    else if(!is_empty()){
+        val = tail->value;
+        tail = N->next;
+        tail->prev = nullptr;
+        delete N;
+        return val;
+    }
+    else {
+        std::cout << "Du kan inte poppa när den är tom" << std::endl;
+        return 0;
+    }
 }
 
 //status
@@ -141,9 +224,34 @@ bool linked_list::is_empty() const{
     }
 }
 
+// output
+void linked_list::print() const{
+    node* it = head;
+    std::cout << it->value;
+    for(size_t i = 0; i < size(); i++){
+        it = it->prev;
+        std::cout << it->value;
+        if (i == size()-1)
+            std::cout << std::endl;
+        else {
+            std::cout << ", ";
+        }
+    }
+}
 
-
-
+void linked_list::print_reverse() const{
+    node* it = tail;
+    std::cout << it->value;
+    for(size_t i = 0; i < size(); i++){
+        it = it->next;
+        std::cout << it->value;
+        if (i == size()-1)
+            std::cout << std::endl;
+        else {
+            std::cout << ", ";
+        }
+    }
+}
 
 linked_list::node* linked_list::find(size_t pos) const {
     node* it = head;

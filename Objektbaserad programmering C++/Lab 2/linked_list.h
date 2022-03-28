@@ -24,6 +24,8 @@ class linked_list {
     double front() const;
     double back() const ;
     double at(size_t pos) const;
+    
+    
 
     // removing elements
     void remove(size_t pos);
@@ -46,6 +48,8 @@ class linked_list {
     };
     node* head;
     node* tail;
+
+    node* find(size_t pos) const;
 };
 
 #endif

@@ -39,21 +39,28 @@ linked_list::~linked_list(){
 linked_list &linked_list::operator=(const linked_list &rhs){
     if (this != &rhs){ //Om lhs och rhs är samma behöver inget hända
         node* it = rhs.head;
-        if(is_empty()) { //Om om lhs är tom, pusha alla rhs
-            while(it != nullptr){
+        while(!is_empty()){ // Tömmer 
+            pop_front();
+        }
+        while(it != nullptr){   //Fyller
                 push_back(it->value);
                 it = it->prev;
-            }
         }
-        else{   // Om lhs inte är tom, töm den och fyll den med rhs
-            while(!is_empty()){
-                pop_front();
-            }
-            while(it != nullptr){
-                push_back(it->value);
-                it = it->prev;
-            }
-        }
+        // if(is_empty()) { //Om om lhs är tom, pusha alla rhs
+        //     while(it != nullptr){
+        //         push_back(it->value);
+        //         it = it->prev;
+        //     }
+        // }
+        // else{   // Om lhs inte är tom, töm den och fyll den med rhs
+        //     while(!is_empty()){
+        //         pop_front();
+        //     }
+        //     while(it != nullptr){
+        //         push_back(it->value);
+        //         it = it->prev;
+        //     }
+        // }
     }
     return *this;
 }
@@ -132,22 +139,24 @@ void linked_list::push_front(double value){
 
 //accessing elements
 double linked_list::front() const{
+    // return head->value;
     if(!is_empty()){
         return head->value;
     }
     else {
-        std::cout << "There are no elements in the list" << std::endl;
-        return NULL;
+        std::cout << "Failed to call front function, there are no elements in the list" << std::endl;
+        exit(1);
     }
 }
 
 double linked_list::back() const{
+    // return tail->value;
     if(!is_empty()){
         return tail->value;
     }
     else {
-        std::cout << "There are no elements in the list" << std::endl;
-        return NULL;
+        std::cout << "Failed to call back function, there are no elements in the list" << std::endl;
+        exit(1);
     }
 }
 
@@ -155,19 +164,20 @@ double linked_list::at(size_t pos) const{
     if(!is_empty()){
         if(size() == 0){
             std::cout<<"The list is empty..." << std::endl;
+            exit(1);
         }
         else if (pos > size()){
             std::cout<<"The given position is out of bounds"<<std::endl;
+            exit(1);
         }
         else{
             return (find(pos)->value);
         }
     }
     else {
-        std::cout << "There are no elements in the list" << std::endl;
-        return NULL;
+        std::cout << "Failed to call at function, there are no elemets in the list" << std::endl;
+        exit(1);
     }
-
 
     // return (find(pos)->value);
 }
@@ -192,7 +202,11 @@ void linked_list::remove(size_t pos) {
 double linked_list::pop_front(){
     double val;
     node* N = head;
-    if (size() == 1){
+    if (is_empty()){
+        std::cout << "There are no elements in the list front" << std::endl;
+        exit(1);
+    }
+    else if (size() == 1){
         val = head->value;
         head = nullptr;
         tail = nullptr;
@@ -200,17 +214,14 @@ double linked_list::pop_front(){
         return val;
 
     }
-    else if (!is_empty()) {
+    else {
         val = head->value;
-        head = N->prev;
+        head = head->prev;
         head->next = nullptr;
         delete N;
         return val;
     }
-    else{
-        std::cout << "There are no elements in the list" << std::endl;
-        return NULL;
-    }
+    
 }
 
 double linked_list::pop_back(){
@@ -231,8 +242,8 @@ double linked_list::pop_back(){
         return val;
     }
     else {
-        std::cout << "There are no elements in the list" << std::endl;
-        return NULL;
+        std::cout << "There are no elements in the list back" << std::endl;
+        exit(1);
     }
 }
 
@@ -244,12 +255,10 @@ size_t linked_list::size() const{
         node* it = head;
         while(it != nullptr) {
             node_counter++;
-            it = it->next;
+            it = it->prev;
         }
     }
-    else {
-        return node_counter;
-    }
+    return node_counter;
 }
 bool linked_list::is_empty() const{
     if(head == nullptr && tail == nullptr){
@@ -263,32 +272,20 @@ bool linked_list::is_empty() const{
 // output
 void linked_list::print() const{
     node* it = head;
-    std::cout << it->value;
-    for(size_t i = 0; i < size(); i++){
+    while(it != nullptr){
+        std::cout << it->value << " ";
         it = it->prev;
-        std::cout << it->value;
-
-        if (i == size()-1)
-            std::cout << std::endl;
-        else {
-            std::cout << ", ";
-        }
     }
+    std::cout << std::endl;
 }
 
 void linked_list::print_reverse() const{
     node* it = tail;
-    std::cout << it->value;
-    for(size_t i = 0; i < size(); i++){
+    while(it != nullptr){
+        std::cout << it->value << " ";
         it = it->next;
-        std::cout << it->value;
-
-        if (i == size()-1)
-            std::cout << std::endl;
-        else {
-            std::cout << ", ";
-        }
     }
+    std::cout << std::endl;
 }
 
 linked_list::node* linked_list::find(size_t pos) const {

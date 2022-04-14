@@ -13,7 +13,6 @@ struct Adress {
     std::string street,city;
     int zip;
 };
-//This is a test 2
 struct Person {
     std::string name, id;
     Adress location;
@@ -24,7 +23,6 @@ size_t find_in_names( const std::vector <Person>&haystack, std::string name_part
 std::vector <Person> find_person_from_city(const std::vector <Person>&haystack, std::string city);
 std::istream &operator>> (std::istream & in, Person &p);
 void string_to_lower(std::string&s);
-
 
 int main(){
     std::string filename = "names.txt";
@@ -65,12 +63,11 @@ std::vector<Person> read_file(std::string filename) {
     std::ifstream file;
     file.open(filename);
     Person person_temp;
-    std::vector<Person> haystack;    
+    std::vector<Person> haystack;
     if(file.is_open()){
         file >> person_temp;    //Kör en gång innan loopen för att iterera rätt antal gånger genom filen
         while(!file.eof()){
             haystack.push_back(person_temp);    //Lägger personen i vectorn
-            //cout << person_temp.name << endl << person_temp.id << endl << person_temp.location.street << endl << person_temp.location.zip << endl << person_temp.location.city  << endl << endl;
             file >> person_temp;    //Matar in en ny person
         }
     }
@@ -117,18 +114,17 @@ std::istream &operator>> (std::istream &in, Person &p){
     getline(in, p.name);        //Läser in första
     getline(in, p.id);          //Läser in andra
     getline(in, adress, '\n');  //Läser in hela sista raden
-    if(in.eof()){   // Kontrollerar om filen är slut för att inte fortstätta
+    if(in.eof()){   // Kontrollerar om filen är slut för att inte fortstätta när inte finns några personer kvar
         return in;
     }
-    // if (!adress.empty()){
-
     pos = adress.find(",");         //hittar comma tecknet för att utgå ifrån det i extraheringen av adressen
     street = adress.substr(0, pos); //från början till comma
     zip = adress.substr(pos+2, 6);  //från comma + 2 till slut av zip koden
     zip.erase(zip.begin()+3);       // tar bort mellanrummer i zipkoden så att ingen information försvinner när den konverteras till en int
     city = adress.substr(pos+10);   //från början av stadsnamnet till slutet av raden
     
-    for (int i = 0; i < city.length(); i++){        //for loop för att hitta var statsnamnet slutar
+    
+    for (int i = 0; i < city.length(); i++){        //for loop för att hitta var stadsnamnet slutar
         if (city[i] != ' ')
             pos = i;
     }

@@ -5,95 +5,73 @@
     Lab 2 - Linked list
 */
 
-#include <iostream>
 #include "linked_list.h"
 
-linked_list::linked_list(){
+//Constructor
+linked_list::linked_list(){ 
     head = nullptr;
     tail = nullptr;
 }
+
+//Copy constructor
+linked_list::linked_list(const linked_list &src){
+    
+    if (!is_empty()){      // Så länge den inte är tom
+        head = nullptr;
+        tail = nullptr;
+        *this = src;       // Anväder sig av assignment operatorn
+    }
+    else{      // Om src är tom, måste fortfarande en länkad lista skapas. 
+        head = nullptr;
+        tail = nullptr;
+    }
+}
+
+//Destructor
+linked_list::~linked_list(){    
+    if(!is_empty()){
+        node* it = head;
+        while(it != nullptr){   //Poppar varje nod
+            it = it->prev;
+            pop_front();
+        }
+    }
+}
+
 linked_list::node::node(double value) {
     this->value = value;
     next = nullptr;
     prev = nullptr;
 }
 
-linked_list::linked_list(const linked_list &src){
-    head = nullptr;
-    tail = nullptr;
-    
-    *this = src;
-}
-
-linked_list::~linked_list(){
-    if(!is_empty()){
-        node* it = head;
-        while(it != nullptr){
-            it = it->prev;
-            pop_front();
-        }
-    }
-}
-
-//assigns lhs to rhs
+//Assignment operator
 linked_list &linked_list::operator=(const linked_list &rhs){
     if (this != &rhs){ //Om lhs och rhs är samma behöver inget hända
         node* it = rhs.head;
-        while(!is_empty()){ // Tömmer 
+        while(!is_empty()){ //Tömmer lhs varje gång 
             pop_front();
         }
-        while(it != nullptr){   //Fyller
+        while(it != nullptr){  //Fyller lhs med rhs
                 push_back(it->value);
                 it = it->prev;
         }
-        // if(is_empty()) { //Om om lhs är tom, pusha alla rhs
-        //     while(it != nullptr){
-        //         push_back(it->value);
-        //         it = it->prev;
-        //     }
-        // }
-        // else{   // Om lhs inte är tom, töm den och fyll den med rhs
-        //     while(!is_empty()){
-        //         pop_front();
-        //     }
-        //     while(it != nullptr){
-        //         push_back(it->value);
-        //         it = it->prev;
-        //     }
-        // }
     }
     return *this;
 }
 
-//appends elements from rhs
+
 linked_list &linked_list::operator+=(const linked_list &rhs){
     node* it = rhs.head;
-    if(this != &rhs) { 
-        while(it != nullptr) {
-            push_back(it->value);
-            it = it->next;
-        }
-    }
-    else { // Lägger rhs till en temporär lista
-        linked_list temp;
-        while(it != nullptr) {
-            temp.push_back(it->value);
-            it = it->prev;
-        }
-        it = temp.head; // Sätter ihop temp till "this"
-        while(it != nullptr) {
-            push_back(it->value);
-            it = it->prev;
-        }
+
+    while(it != nullptr) {    // Appendar varje nod till lhf
+        push_back(it->value);
+        it = it->prev;
     }
     return *this;
 }
 
-//inserting elements
+//------inserting elements------
 void linked_list::insert(double value, size_t pos){
-    // if(pos > size() || pos < 0){
-    //     exit(1);
-    // }
     if (pos == size()){
         push_back(value);
     }
@@ -112,11 +90,11 @@ void linked_list::insert(double value, size_t pos){
 
 void linked_list::push_back(double value){
     node* N = new node(value);
-    if(is_empty()){
+    if(is_empty()){ //Om listan är tom, sätt både head och tail till noden
         head = N;
         tail = N;
     }
-    else {
+    else {  
         N->next = tail;
         tail->prev = N;
         tail = N;
@@ -137,9 +115,8 @@ void linked_list::push_front(double value){
     }
 }
 
-//accessing elements
+//------accessing elements------
 double linked_list::front() const{
-    // return head->value;
     if(!is_empty()){
         return head->value;
     }
@@ -150,7 +127,6 @@ double linked_list::front() const{
 }
 
 double linked_list::back() const{
-    // return tail->value;
     if(!is_empty()){
         return tail->value;
     }
@@ -171,18 +147,16 @@ double linked_list::at(size_t pos) const{
             exit(1);
         }
         else{
-            return (find(pos)->value);
+            return (find(pos)->value);  
         }
     }
     else {
         std::cout << "Failed to call at function, there are no elemets in the list" << std::endl;
         exit(1);
     }
-
-    // return (find(pos)->value);
 }
 
-//removing elements
+//------removing elements------
 void linked_list::remove(size_t pos) {
 
     if(pos == 0){
@@ -203,10 +177,10 @@ double linked_list::pop_front(){
     double val;
     node* N = head;
     if (is_empty()){
-        std::cout << "There are no elements in the list front" << std::endl;
+        std::cout << "Cannot pop front, there are no elements in the list" << std::endl;
         exit(1);
     }
-    else if (size() == 1){
+    else if (size() == 1){  // Specialfall om det bara finns en nod kvar, sätter head och tail till nullptrs
         val = head->value;
         head = nullptr;
         tail = nullptr;
@@ -227,27 +201,28 @@ double linked_list::pop_front(){
 double linked_list::pop_back(){
     double val;
     node* N = tail;
-    if(size() == 1){
+    if (is_empty()){
+        std::cout << "Cannot pop back, there are no elements in the list" << std::endl;
+        exit(1);
+    }
+    else if (size() == 1){  // Specialfall om det bara finns en nod kvar, sätter head och tail till nullptrs
         val = tail->value;
         head = nullptr;
         tail = nullptr;
         delete N;
         return val;
     }
-    else if(!is_empty()){
+    else {
         val = tail->value;
         tail = N->next;
         tail->prev = nullptr;
         delete N;
         return val;
     }
-    else {
-        std::cout << "There are no elements in the list back" << std::endl;
-        exit(1);
-    }
+    
 }
 
-//status
+//------status------
 size_t linked_list::size() const{
     size_t node_counter = 0;
 
@@ -269,7 +244,7 @@ bool linked_list::is_empty() const{
     }
 }
 
-// output
+// ------output------
 void linked_list::print() const{
     node* it = head;
     while(it != nullptr){
@@ -288,6 +263,7 @@ void linked_list::print_reverse() const{
     std::cout << std::endl;
 }
 
+//------Private find function used in other functions------
 linked_list::node* linked_list::find(size_t pos) const {
     node* it = head;
     for(size_t i = 0; i < pos; i++) {

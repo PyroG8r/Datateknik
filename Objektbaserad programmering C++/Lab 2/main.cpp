@@ -53,7 +53,6 @@ int main(){
 //------------Test 3------------
     std::cout << std::endl;
     std::cout << "Test 3: The now smallest list in reverse: " << std::endl;
-    // linked_list list3;
     if (list1.size() < list2.size()) list3 = list1;
     else list3 = list2;
     list3.print_reverse();
@@ -84,19 +83,15 @@ int main(){
 
 //------------Test 5------------
     std::cout << std::endl;
-    std::cout << "Test 5: Printing the shortened list using the \"print_list()\" function " << std::endl;
+    std::cout << "Test 5: Printing the halved down list using the \"print_list()\" function " << std::endl;
     if(list1.size() == 25) print_list(list1);
-    else print_list(list1);
+    else print_list(list2);
 
 //-----------Test 6------------
     std::cout << std::endl;
-    // std::cout << list1.size() << std::endl;
-    // std::cout << list2.size() << std::endl;
     std::cout << "Test 6: Merging the first two lists... new list is: " << std::endl;
-    // linked_list 
     list4 = merge(list1, list2);
     list4.print();
-    // std::cout << list4.size() << std::endl;
 
 //------------Test 7------------
     std::cout << std::endl;
@@ -106,41 +101,43 @@ int main(){
 
 }
 
+//Prints the given list
 void print_list(linked_list l){
     l.print();
 }
 
+//Merges the two lists and returns the newly merged list
 linked_list merge(linked_list& list1, linked_list& list2){
     linked_list merged_list;
     
-    while(!list1.is_empty() && !list2.is_empty()){
-        if (list1.front() < list2.front()){
-            merged_list.push_back(list1.pop_front());
+    while(!list1.is_empty() && !list2.is_empty()){  //så länge listorna har något i sig
+        //jämför listornas första tal och tar bort samt lägger det minsta i merged list
+        //resulterar i en sorterad lista som består av båda listorna
+        if (list1.front() < list2.front()){         
+            merged_list.push_back(list1.pop_front());  
         }
         else {
             merged_list.push_back(list2.pop_front());
         }
     }
-    // merged_list += list1;
-    // merged_list += list2;
-    while(!list1.is_empty()){
-        merged_list.push_back(list1.pop_front());
+
+    //om det är kvar något i någon av listorna efter loopen, lägg till det på slutet av den nya listan
+    if(!list1.is_empty()){
+        merged_list += list1;   
     }
-    while(!list2.is_empty()){
-        merged_list.push_back(list2.pop_front());
+    else if(!list2.is_empty()){
+        merged_list += list2;    
     }
     return merged_list;
 }
 
+//Returns either true or false, wether the list is sorted in ascending order or not
 bool is_sorted(const linked_list& list){
-    for(size_t i = 0; i < list.size(); i++){
-        if(i == list.size() - 1) { 
-            break;
-        }
-        if(list.at(i + 1) < list.at(i)) {
+    for(size_t i = 0; i < list.size() - 1; i++){ //loopar egenom listan
+        if(list.at(i + 1) < list.at(i)) {   //om nästa värdet är mindre än förra, returnara false
             return false;
         }
     }
-    return true;
+    return true;    //om loopen avslutas är varje tal störra än det förra och listan är sorterad
 }
 

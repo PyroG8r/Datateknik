@@ -5,6 +5,7 @@ Maze::Maze(){   // default generate 11 x 11 maze;
     end = nullptr;
     head = nullptr;
 
+    srand (time(NULL));
     structure(11,11);
 }
 
@@ -13,6 +14,7 @@ Maze::Maze(size_t size_X, size_t size_Y){
     end = nullptr;
     head = nullptr;
 
+    srand (time(NULL));
     structure(size_X,size_Y);
 }
 Maze::~Maze(){
@@ -36,6 +38,8 @@ void Maze::structure(size_t size_X, size_t size_Y){
     node* kolumn = new node();
     node* row;
     head = kolumn;
+    // size_X = (size_X <- 1) / 2;
+    // size_Y = (size_Y - 1) / 2;>
     for(size_t i = 0; i < size_X - 1; i++){
         node* N = new node();
         kolumn->right = N;
@@ -71,7 +75,6 @@ void Maze::structure(size_t size_X, size_t size_Y){
     }
 
     begin = getNodeFromSurround(begin_pos);
-    begin->visited = true;
     end = getNodeFromSurround(end_pos);
 }
 
@@ -84,10 +87,10 @@ void Maze::generate_dfs(){
     size_t direction;
 
     while(!node_stack.empty()){
-        direction = rand() % 4;
+        direction = rand() % 4; // problem att den väljer ett slumpmässigt håll som kanske redan är valt och då inte leder någon stans
         N = node_stack.top();
         if(has_Neighbours(N)){
-            node_stack.push(N);
+            // node_stack.push(N);
             if(direction == up) {go_Up(N, node_stack);}
             if(direction == right) {go_Right(N, node_stack);}
             if(direction == down) {go_Down(N, node_stack);}
@@ -95,6 +98,7 @@ void Maze::generate_dfs(){
             // N = node_stack.top();
         }
         else{
+
             node_stack.pop();
             // N = node_stack.top();
         }
@@ -151,27 +155,81 @@ void Maze::go_Up(node* &N, std::stack<node*> &node_stack){
     if(N->up != nullptr && N->up->visited == false){
         N->up->visited = true;
         node_stack.push(N->up);
+        system("clear");
+        print();
+        usleep(50000);
     }
+    
+
 }
 void Maze::go_Right(node* &N, std::stack<node*> &node_stack){
     if(N->right != nullptr && N->right->visited == false){
         N->right->visited = true;
         node_stack.push(N->right);
+        system("clear");
+        print();
+        usleep(50000);
     }
+    
 }
 void Maze::go_Down(node* &N, std::stack<node*> &node_stack){
     if(N->down != nullptr && N->down->visited == false){
         N->down->visited = true;
         node_stack.push(N->down);
+        system("clear");
+        print();
+        usleep(50000);
     }
+    
 }
 void Maze::go_Left(node* &N, std::stack<node*> &node_stack){
     if(N->left != nullptr && N->left->visited == false){
         N->left->visited = true;
         node_stack.push(N->left);
+        system("clear");
+        print();
+        usleep(50000);
     }
+    
 }
 
 void Maze::print() const{
+    node* kolumn = head;
+    node* row = head;
+    // while(kolumn != nullptr){ 
+    //     std::cout << "██" << std::flush;
+    //      kolumn = kolumn->right;
+    // }
+    // std::cout << std::endl;
+    // kolumn = head;
+    while(row != nullptr){
+        // std::cout << "██" << std::flush;
+        while(kolumn != nullptr){
+            if (!kolumn->visited){
+                std::cout << "██" << std::flush;
+            }
+            else {
+                if (kolumn == begin){
+                    std::cout << "S" << std::flush;
+                }
+                else if ( kolumn == end){
+                    std::cout << "E" << std::flush;
+                }
+                else{
+                    if(kolumn->path){
+                        std::cout << "+" << std::flush;
+                    }
+                    else{
+                        std::cout << "+" << std::flush; //"　"
+                    }
+                }
+            }
+            kolumn = kolumn->right;
+        }
+        
+        std::cout << std::endl;
+        row = row->down;
+        kolumn = row;
+    }
 
 }

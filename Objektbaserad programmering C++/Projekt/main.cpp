@@ -2,6 +2,6 @@
 #include "maze.h"
 
 int main (){
-    Maze maze(4,4);
-    
+    Maze maze(9,9);
+    maze.generate_dfs();
 }

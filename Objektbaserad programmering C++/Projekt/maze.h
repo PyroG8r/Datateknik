@@ -6,7 +6,7 @@
 #include <time.h>
 #include <stdlib.h>
 #include <stack>
-
+#include <unistd.h>
 
 
 class Maze{

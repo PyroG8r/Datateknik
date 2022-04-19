@@ -2,6 +2,10 @@
 #include "maze.h"
 
 int main (){
-    Maze maze(9,9);
+    Maze maze(13,13);
     maze.generate_dfs();
+    // maze.generate_bfs();
+    maze.print();
+    maze.solve();
+    maze.print();
 }

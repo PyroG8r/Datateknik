@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <stack>
 #include <unistd.h>
+#include <queue>
 
 
 class Maze{
@@ -20,6 +21,7 @@ class Maze{
 
     void generate_dfs();     //generate maze via dfs
     void generate_bfs();     //generate maze via bfs
+    void solve();
 
     void print() const;
 
@@ -29,6 +31,7 @@ class Maze{
         node(/*bool visited, bool path*/);
         bool visited;
         bool path;
+        bool way;
         node* up;
         node* right;
         node* down;
@@ -41,14 +44,16 @@ class Maze{
 
     void structure(size_t size_X, size_t size_Y);
 
-    void go_Up(node* &N, std::stack<node*> &node_stack);
-    void go_Right(node* &N, std::stack<node*> &node_stack);
-    void go_Down(node* &N, std::stack<node*> &node_stack);
-    void go_Left(node* &N, std::stack<node*> &node_stack);
+    void go_Up(node* &N, std::vector<node*> &node_stack);
+    void go_Right(node* &N, std::vector<node*> &node_stack);
+    void go_Down(node* &N, std::vector<node*> &node_stack);
+    void go_Left(node* &N, std::vector<node*> &node_stack);
 
-    // node* startNode() const;
-    // node* endNode() const;
+    bool solve_Neighbours(node* &N);
+
+    node* cornerNode(node* N) const;
     node* getNodeFromSurround(size_t surround);
+    void setVisited(bool state);
 
     bool has_Neighbours(const node*) const;
 };

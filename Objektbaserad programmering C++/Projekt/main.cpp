@@ -2,7 +2,7 @@
 #include "maze.h"
 
 int main (){
-    Maze maze(13,13);
+    Maze maze(83,23);
     maze.generate_dfs();
     // maze.generate_bfs();
     maze.print();

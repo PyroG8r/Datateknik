@@ -100,12 +100,10 @@ void Maze::generate_dfs(){
         direction = rand() % 4; // problem att den väljer ett slumpmässigt håll som kanske redan är valt och då inte leder någon stans
         N = node_stack.back();
         if(has_Neighbours(N)){
-            // node_stack.push(N);
             if(direction == up) {go_Up(N, node_stack);}
             if(direction == right) {go_Right(N, node_stack);}
             if(direction == down) {go_Down(N, node_stack);}
             if(direction == left) {go_Left(N, node_stack);}
-            // N = node_stack.top();
             // system("clear");
             // print();
             // usleep(50);
@@ -113,7 +111,6 @@ void Maze::generate_dfs(){
         else{
 
             node_stack.pop_back();
-            // N = node_stack.top();
         }
     }
 
@@ -151,69 +148,55 @@ void Maze::generate_bfs(){
 
 }
 
-void Maze::solve(){
-    node* path;
+void Maze::solve()
+{
+    node *path;
     path = begin;
-    std::vector<node*> node_stack;
-    std::vector<node*> path_stack;
-    node_stack.push_back(path);
+    std::vector<node *> path_stack;
     path_stack.push_back(path);
-    // setVisited(false);
+    path_stack.push_back(path);
     path->path = true;
-    print();
-    while(!node_stack.empty()){
-        path = node_stack.back();
-        path->visited = true;
-        
+    while (!path_stack.empty()){
+        path = path_stack.back();
+
         if (path == end){
             break;
-            
         }
-        else if(solve_Neighbours(path)){
 
-            if (path->up->visited == true && !path->up->path){
-                path->up->up->path = true;
-                path->up->path = true;
-                node_stack.push_back(path->up->up);
-                path_stack.push_back(path->up->up);
-                path_stack.push_back(path->up);
-            }
-            else if (path->right->visited == true && !path->right->path){
-                path->right->right->path = true;
-                path->right->path = true;
-                node_stack.push_back(path->right->right);
-                path_stack.push_back(path->right->right);
-                path_stack.push_back(path->right);
-            }
-            else if (path->down->visited == true && !path->down->path){
-                path->down->down->path = true;
-                path->down->path = true;
-                node_stack.push_back(path->down->down);
-                path_stack.push_back(path->down->down);
-                path_stack.push_back(path->down);
-            }
-            else if (path->left->visited == true && !path->left->path){
-                path->left->left->path = true;
-                path->left->path = true;
-                node_stack.push_back(path->left->left);
-                path_stack.push_back(path->left->left);
-                path_stack.push_back(path->left);
-            }
-            
+        else if (path->up->visited == true && !path->up->path){
+            path->up->up->path = true;
+            path->up->path = true;
+            path_stack.push_back(path->up);
+            path_stack.push_back(path->up->up);
+        }
+        else if (path->right->visited == true && !path->right->path){
+            path->right->right->path = true;
+            path->right->path = true;
+            path_stack.push_back(path->right);
+            path_stack.push_back(path->right->right);
+        }
+        else if (path->down->visited == true && !path->down->path){
+            path->down->down->path = true;
+            path->down->path = true;
+            path_stack.push_back(path->down);
+            path_stack.push_back(path->down->down);
+        }
+        else if (path->left->visited == true && !path->left->path){
+            path->left->left->path = true;
+            path->left->path = true;
+            path_stack.push_back(path->left);
+            path_stack.push_back(path->left->left);
         }
         else{
-            node_stack.pop_back();
-            path_stack.pop_back();
-            path_stack.pop_back();
+            if (path_stack.size() == 1){path_stack.pop_back();}
+            else{path_stack.resize(path_stack.size() - 2);} // remove last 2 elements
         }
-
     }
-    for(node* n : path_stack){
+    for (node *n : path_stack)
+    {
         n->way = true;
     }
-    
 }
-
 
 Maze::node* Maze::cornerNode(node* N) const{
     node* p;
@@ -245,18 +228,6 @@ Maze::node* Maze::getNodeFromSurround(size_t surround){
     return N;
 }
 
-void Maze::setVisited(bool state){
-    node* kolumn = head->down->right;
-    node* row = kolumn;
-    while (row != nullptr){
-        while (kolumn != nullptr){
-            kolumn->visited = state;
-            kolumn = kolumn->right->right;
-        }
-        row = row->down->down;
-        kolumn = row;
-    }
-}
 
 
 //checks if the the node has any neighbours that is not visited
@@ -275,6 +246,7 @@ bool Maze::has_Neighbours(const node* N) const{
     }
     return false;
 }
+
 
 void Maze::go_Up(node* &N, std::vector<node*> &node_stack){
     if(N->up->up != nullptr && N->up->up->visited == false){
@@ -308,23 +280,6 @@ void Maze::go_Left(node* &N, std::vector<node*> &node_stack){
     
 }
 
-bool Maze::solve_Neighbours(node* &N){
-    if (N->up->visited && !N->up->path){
-        return true;
-    }
-    else if (N->right->visited && !N->right->path){
-        return true;
-    }
-    else if (N->down->visited && !N->down->path){
-        return true;
-    }
-    else if (N->left->visited&& !N->left->path){
-        return true;
-    }
-    else {
-        return false;
-    }
-}
 
 void Maze::print() const{
     node* kolumn = head;
@@ -333,21 +288,21 @@ void Maze::print() const{
         while(kolumn != nullptr){
             if (!kolumn->visited){
                 if (kolumn == cornerNode(begin)){
-                    std::cout << "S " << std::flush;
+                    std::cout << "S ";
                 }
                 else if ( kolumn == cornerNode(end)){
-                    std::cout << "E " << std::flush;
+                    std::cout << "E ";
                 }
                 else {
-                std::cout << "██" << std::flush;
+                std::cout << "██";
                 }
             }
             else {
                     if(kolumn->way){
-                        std::cout << "⬤ " << std::flush;
+                        std::cout << "\033[1;36m⬤ \033[0m";
                     }
                     else{
-                        std::cout << "　" << std::flush; //"　"
+                        std::cout << "　"; //"　"
                     }
                 
             }

@@ -5,9 +5,8 @@
 #include <iostream>
 #include <time.h>
 #include <stdlib.h>
-#include <stack>
 #include <unistd.h>
-#include <queue>
+#include <vector>
 
 
 class Maze{
@@ -49,11 +48,8 @@ class Maze{
     void go_Down(node* &N, std::vector<node*> &node_stack);
     void go_Left(node* &N, std::vector<node*> &node_stack);
 
-    bool solve_Neighbours(node* &N);
-
     node* cornerNode(node* N) const;
     node* getNodeFromSurround(size_t surround);
-    void setVisited(bool state);
 
     bool has_Neighbours(const node*) const;
 };

@@ -1,16 +1,7 @@
-#include <iostream>
 #include "maze.h"
-#include <limits>
-#include <algorithm>
+#include "menu.h"
 
-void welcome_Screen();
-bool IsDigits(const std::string &str);
-bool is_Odd(const size_t &number);
-size_t input_Dim();
-size_t input_Positive_Number();
-size_t input_Option(size_t, size_t);
-
-int main()
+void menu()
 {
     size_t option;
     size_t delay;
@@ -58,14 +49,14 @@ int main()
                 maze.print();
                 break;
             case 3:
-                return 0;
+                exit(0);
             default:
                 break;
             }
             break;
         }
         case 2:
-            return 0;
+            exit(0);
         default:
             break;
         }
@@ -90,8 +81,8 @@ size_t input_Dim()
     std::cin >> str;
     if (str == ""){ return 11;}
     else{
-        while (!IsDigits(str) || !is_Odd(stoi(str)) || stoi(str) < 5){
-            std::cout << "You must input a positive odd number over five...";
+        while (!IsDigits(str) || !is_Odd(stoi(str)) || stoi(str) < 3){
+            std::cout << "You must input a positive odd number over three...";
             std::cin >> str;
         }
         return stoi(str);

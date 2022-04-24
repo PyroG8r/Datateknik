@@ -9,6 +9,7 @@
                 "-g",
                 "main.cpp",
                 "maze.cpp",
+                "menu.cpp",
                 "-o",
                 "${fileDirname}/${fileBasenameNoExtension}"
             ],

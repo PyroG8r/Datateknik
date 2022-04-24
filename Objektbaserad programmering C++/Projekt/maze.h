@@ -18,7 +18,7 @@ class Maze{
 
     Maze& operator=(const Maze &rhs);   //tilldelning
 
-    void set(std::string);
+    void set(std::vector<std::string>);
     void generate_dfs(size_t delay);     //generate maze via dfs
     void generate_bfs(size_t delay);     //generate maze via bfs
     void solve();

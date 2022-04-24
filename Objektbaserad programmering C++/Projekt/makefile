@@ -1,5 +1,5 @@
-program: main.cpp maze.cpp 
-	g++ -o main main.cpp maze.cpp -g
+program: main.cpp maze.cpp menu.cpp
+	g++ -o main main.cpp maze.cpp menu.cpp -g
 
 run: program
 	./main

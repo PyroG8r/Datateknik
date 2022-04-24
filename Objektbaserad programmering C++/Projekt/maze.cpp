@@ -158,10 +158,42 @@ void Maze::generate_bfs(size_t delay){
 }
 
 
-void Maze::set(std::string str){
+/**
+ *  I textfilen tolkar du whitespaces som ¨oppningar, undantaget radbrytningar, och non-whitespaces som v¨aggar, undantaget S som ¨ar startpunkten
+    och E som ¨ar slutpunkten. Dina utskrifter beh¨over inte anv¨anda samma
+    tecken som den inl¨asta labyrinten
+ */
+void Maze::set(std::vector<std::string> v){
+    std::string str;
+    node* kolumn = head;
+    node* rows = kolumn;
+    for (auto &s : v){
+        for (auto &c : s){
+            if (c == ' '){
+                kolumn->visited = true;
+            }
+            else {
+                if (c == 'e' || c == 'E'){
+                    if(kolumn->up == nullptr){end = kolumn->down;}
+                    else if(kolumn->right == nullptr){end = kolumn->left;}
+                    else if(kolumn->down == nullptr){end = kolumn->up;}
+                    else if(kolumn->left == nullptr){end = kolumn->right;}
+                }
+                else if (c == 's' || c == 'S'){
+                    if(kolumn->up == nullptr){begin = kolumn->down;}
+                    else if(kolumn->right == nullptr){begin = kolumn->left;}
+                    else if(kolumn->down == nullptr){begin = kolumn->up;}
+                    else if(kolumn->left == nullptr){begin = kolumn->right;}
+                }
+            }
+            kolumn = kolumn->right;
+        }
+        rows = rows->down;
+        kolumn = rows;
 
+        
+    }
 }
-
 
 /**
  * @brief Solves the maze using the DFS algorithm, 
@@ -231,8 +263,7 @@ Maze::node* Maze::cornerNode(node* N) const{
 }
 
 /**
- * @brief gets a node from the surrounding corners of the maze in 
- * order to visualize the openings for the begining and the ending
+ * @brief 
  * 
  * @param surround the circumference of the maze
  * @return Maze::node* 
@@ -321,12 +352,12 @@ void Maze::print() const{
         while(kolumn != nullptr){
             if (!kolumn->visited){
                 if (kolumn == cornerNode(begin)){
-                    std::cout << "S ";
-                    // std::cout << "\033[1;32m⚑ \033[0m";
+                    // std::cout << "S ";
+                    std::cout << "\033[1;32m⚑ \033[0m";
                 }
                 else if ( kolumn == cornerNode(end)){
-                    std::cout << "E ";
-                    // std::cout << "\033[1;31m⚑ \033[0m";
+                    // std::cout << "E ";
+                    std::cout << "\033[1;31m⚑ \033[0m";
                     
                 }
                 else {
@@ -335,8 +366,8 @@ void Maze::print() const{
             }
             else {
                     if(kolumn->way){
-                        std::cout << "⬤ ";
-                        // std::cout << "\033[1;94m⬤ \033[0m";
+                        // std::cout << "* ";
+                        std::cout << "\033[1;94m⬤ \033[0m";
                     }
                     else{
                         std::cout << "  ";

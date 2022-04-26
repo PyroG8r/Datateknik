@@ -7,6 +7,22 @@
 #include <stdio.h>
 // #include <utility>
 
+
+
+/**
+ * Frågor till najeb...
+ * 
+ * Inläsning från labyrint, där det är ett x på en plats där det ska vara en nod.
+ * 
+ * CLI argument fel, inget --solve ledet till fel i utskrifter.
+ * 
+ * Ingen tilldeling eller copykontruktor.
+ * 
+ * Start och på samma plats
+ * 
+ * Stach eller sluts på olika plats från inläsning till utskrift
+ */
+
 std::pair<size_t, size_t> get_Dimensions(std::vector<std::string>);
 std::vector<std::string> read_File();
 int main(int argc, char** argv)
@@ -17,10 +33,11 @@ int main(int argc, char** argv)
             argument = argv[i];
             if(argument == "--solve") {
                 std::vector<std::string> v = read_File();
-                Maze maze(get_Dimensions(v).first,get_Dimensions(v).second);
+                std::pair<size_t, size_t> dim = get_Dimensions(v);
+                Maze maze(dim.first,get_Dimensions(v).second);
                 maze.set(v);
-                maze.solve();
-                maze.print();
+                if (!maze.solve()){exit(1);}
+                maze.print(false);
             }
             else {
                 std::cout << "error" << std::endl;
@@ -29,32 +46,37 @@ int main(int argc, char** argv)
     }
     else {
         menu();
-        // Maze maze(81,15);
-        
-        // maze.generate_dfs(500);
-        // // maze.generate_bfs(0);
-        // maze.solve();
-        // system("clear");
-        // maze.print();
     }
 
     return 0;
 }
 
-
+/**
+ * @brief Reads file using getline(cin), pushes every line into a vector with strings.
+ * handles exepetions if some line is different size, resulting in an illigal maze
+ * 
+ * @return std::vector<std::string> - vector of strings, every string is one row.
+ */
 std::vector<std::string> read_File(){
     std::vector<std::string> v;
     std::string str;
 
     while (std::getline(std::cin, str)){
-        if (v.size() > 0 && str.length() != v.back().length()){
-            exit(15);
+        if (v.size() > 0 && str.length() != v.back().length()){     // Om raderna är olika långa
+            std::cerr << "Invalid dimensions..." << std::endl;
+            exit(0);
         }
         v.push_back(str);
     }
     return v;
 }
 
+/**
+ * @brief Get the Dimensions of the maze given the string vector
+ * 
+ * @param v string vector
+ * @return std::pair<size_t, size_t> size of the maze (X,Y)
+ */
 std::pair<size_t, size_t> get_Dimensions(std::vector<std::string> v){
     
     size_t size_X, size_Y;
@@ -67,8 +89,9 @@ std::pair<size_t, size_t> get_Dimensions(std::vector<std::string> v){
         }
         size_Y++;
     }
-    if (!is_Odd(size_X) || !is_Odd(size_Y)){
-        exit(1);
+    if (!is_Odd(size_X) || !is_Odd(size_Y)){    // Om labyrinten inte är udda
+        std::cerr << "Invalid dimesions, not odd..." << std::endl;
+        exit(0);
     }
     return std::make_pair(size_X, size_Y);
 }

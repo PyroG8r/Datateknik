@@ -21,14 +21,14 @@ class Maze{
     void set(std::vector<std::string>);
     void generate_dfs(size_t delay);     //generate maze via dfs
     void generate_bfs(size_t delay);     //generate maze via bfs
-    void solve();
+    bool solve();
 
-    void print() const;
+    void print(bool console) const; //print
 
     private:
     enum Direction{up, right, down, left};
     struct node{
-        node(/*bool visited, bool path*/);
+        node();
         bool visited;
         bool path;
         bool way;
@@ -46,13 +46,9 @@ class Maze{
     void set_Surround();
     void structure();
 
-    void go_Dir(node* &N, std::vector<node*> &node_container, size_t dir);
-    // void go_Up(node* &N, std::vector<node*> &node_container);
-    // void go_Right(node* &N, std::vector<node*> &node_container);
-    // void go_Down(node* &N, std::vector<node*> &node_container);
-    // void go_Left(node* &N, std::vector<node*> &node_container);
+    bool go_Dir(node* &N, std::vector<node*> &node_container, size_t dir);
 
-    node* cornerNode(node* N) const;
+    node* edge_Node(node* N) const;
     node* getNodeFromSurround(size_t surround);
 
     bool has_Neighbour(const node*) const;

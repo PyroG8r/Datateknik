@@ -40,7 +40,7 @@ Maze::~Maze(){
     }
 }
 
-Maze::node::node(/*bool visited, bool path*/){ 
+Maze::node::node(){ 
     visited = false;
     path = false;
     way = false;
@@ -99,7 +99,11 @@ void Maze::structure(){
     end = getNodeFromSurround(end_pos);
 }
 
-
+/**
+ * @brief Generates the maze using the DFS algorithm, using a stack
+ * 
+ * @param delay The amount of delay between every new step taken in the generation (ms)
+ */
 void Maze::generate_dfs(size_t delay){
     std::vector<node*> node_stack;
     size_t direction;
@@ -108,22 +112,30 @@ void Maze::generate_dfs(size_t delay){
     node_stack.push_back(N);
     
     while(!node_stack.empty()){
-        direction = rand() % 4; // problem att den väljer ett slumpmässigt håll som kanske redan är valt och då inte leder någon stans
+        direction = rand() % 4;
         N = node_stack.back();
+        node_stack.pop_back();
         if(has_Neighbour(N)){
-            go_Dir(N, node_stack, direction);
+            node_stack.push_back(N);
+            while(!go_Dir(N, node_stack, direction)){
+                direction = rand() % 4;
+            }
+            
             if (!delay == 0){
                 system("clear");
-                print();
+                print(true);
                 usleep(delay);
             }
-        }
-        else{
-            node_stack.pop_back();
         }
     }
 }
 
+
+/**
+ * @brief Generates the maze using the BFS algorithm, using a queue
+ * 
+ * @param delay The amount of delay between every new step taken in the generation (ms)
+ */
 void Maze::generate_bfs(size_t delay){
     std::vector<node*> node_queue;
     size_t direction;
@@ -133,40 +145,43 @@ void Maze::generate_bfs(size_t delay){
 
     while(!node_queue.empty()){
 
-        int randomElement = rand() % node_queue.size();
-        N = node_queue.at(randomElement);
-        // node_queue.erase(node_queue.begin() + randomElement);
-
-
+        N = node_queue.front();
+        node_queue.erase(node_queue.begin());
         direction = rand() % 4;
-        // N = node_queue.front();
         if(has_Neighbour(N)){
-            // node_stack.push(N);
-            go_Dir(N, node_queue, direction);
+            node_queue.push_back(N);
+            while(!go_Dir(N, node_queue, direction)){
+                direction = rand() % 4;
+            }
             if (!delay == 0){
                 system("clear");
-                print();
+                print(true);
                 usleep(delay);
             }
-        }
-        else{
-
-            N = node_queue.front();
-            node_queue.erase(node_queue.begin());
         }
     }
 }
 
 
 /**
- *  I textfilen tolkar du whitespaces som ¨oppningar, undantaget radbrytningar, och non-whitespaces som v¨aggar, undantaget S som ¨ar startpunkten
-    och E som ¨ar slutpunkten. Dina utskrifter beh¨over inte anv¨anda samma
-    tecken som den inl¨asta labyrinten
+ * Sets the atributes of the maze given a vector with strings, 
+ * where each string in the vector represents a row in the maze.
+ * 
+ * handles exeptions if there are too many beginings or endings or none at all.
+ * 
+ * if the character is a space (" ") treat it as a pasage.
+ * if the character is an e or E treat it as an ending
+ * if the character is an s or S treat is as a start.
+ * everything else is a wall. 
+ * 
+ * @param v
  */
 void Maze::set(std::vector<std::string> v){
     std::string str;
     node* kolumn = head;
     node* rows = kolumn;
+    size_t nr_begin = 0;
+    size_t nr_end = 0;
     for (auto &s : v){
         for (auto &c : s){
             if (c == ' '){
@@ -174,16 +189,22 @@ void Maze::set(std::vector<std::string> v){
             }
             else {
                 if (c == 'e' || c == 'E'){
-                    if(kolumn->up == nullptr){end = kolumn->down;}
-                    else if(kolumn->right == nullptr){end = kolumn->left;}
-                    else if(kolumn->down == nullptr){end = kolumn->up;}
-                    else if(kolumn->left == nullptr){end = kolumn->right;}
+                    if (nr_end > 1){std::cerr << "Not a valid maze, too many endings..." << std::endl; exit(0);}
+                    if(kolumn->up == nullptr){end = kolumn->down; }
+                    else if(kolumn->right == nullptr){end = kolumn->left; }
+                    else if(kolumn->down == nullptr){end = kolumn->up; }
+                    else if(kolumn->left == nullptr){end = kolumn->right; }
+                    else{ std::cerr << "Ending is not on an edge" << std::endl; exit(0); }
+                    nr_end++;
                 }
                 else if (c == 's' || c == 'S'){
-                    if(kolumn->up == nullptr){begin = kolumn->down;}
-                    else if(kolumn->right == nullptr){begin = kolumn->left;}
-                    else if(kolumn->down == nullptr){begin = kolumn->up;}
-                    else if(kolumn->left == nullptr){begin = kolumn->right;}
+                    if (nr_begin > 1){std::cerr << "Not a valid maze, too many starts..." << std::endl; exit(0);}
+                    if(kolumn->up == nullptr){begin = kolumn->down; }
+                    else if(kolumn->right == nullptr){begin = kolumn->left; }
+                    else if(kolumn->down == nullptr){begin = kolumn->up; }
+                    else if(kolumn->left == nullptr){begin = kolumn->right; }
+                    else{ std::cerr << "Start is not on an edge" << std::endl; exit(0); }
+                    nr_begin++;
                 }
             }
             kolumn = kolumn->right;
@@ -193,13 +214,14 @@ void Maze::set(std::vector<std::string> v){
 
         
     }
+    if (nr_begin == 0 || nr_end == 0){std::cerr << "Start or ending is missing" << std::endl; exit(0);}
 }
 
 /**
  * @brief Solves the maze using the DFS algorithm, 
  *  
  */
-void Maze::solve() {
+bool Maze::solve() {
     node *path = begin;
     path->path = true;
     std::vector<node*> path_stack;
@@ -239,31 +261,40 @@ void Maze::solve() {
             else { path_stack.resize(path_stack.size() - 2); } // remove last 2 elements
         }
     }
+    if (path_stack.size() == 0){return false;}
     for (node *n : path_stack) {    //when finished the stack "path_stack" contains the way to the finish...
         n->way = true;              //sets the correct atribute to all the nodes in the stack
     }
+    return true;
 }
 
 
 /**
- * @brief Given a node that is adjacent to a corner, return the corner node.
+ * @brief Given a node that is adjacent to a edge, return the edge node.
  * This is used to print out start and finish, making it look like its an
- * opening in the corners of the maze
+ * opening in the edge of the maze
  * @param N Given node
- * @return Node* Corner node
+ * @return Node* edge node
  */
-Maze::node* Maze::cornerNode(node* N) const{
+Maze::node* Maze::edge_Node(node* N) const{
     node* p;
-    if(N->left->left == nullptr){ p = N->left; }
-    else if(N->right->right == nullptr){ p = N->right; }
-    else if(N->up->up == nullptr){ p = N->up; }
-    else if(N->down->down == nullptr){ p = N->down; }
-    
+    if(N == begin){
+        if(N->up->up == nullptr){ p = N->up; }
+        else if(N->down->down == nullptr){ p = N->down; }
+        else if(N->left->left == nullptr){ p = N->left; }
+        else if(N->right->right == nullptr){ p = N->right; }
+    }
+    else if (N == end){
+        if(N->right->right == nullptr){ p = N->right; }
+        else if(N->left->left == nullptr){ p = N->left; }
+        else if(N->down->down == nullptr){ p = N->down; }
+        else if(N->up->up == nullptr){ p = N->up; }
+    }
     return p;
 }
 
 /**
- * @brief 
+ * @brief Gets a node from the circumference of the node grid
  * 
  * @param surround the circumference of the maze
  * @return Maze::node* 
@@ -303,7 +334,6 @@ bool Maze::has_Neighbour(const node* N) const {
     else { return false; }
 }
 
-// ---- Traversal functions for maze generation ---- 
 /**
  * @brief Checks if the node in the direction is not nullptr and not visited
  * sets the node and the passage to visited and pushes the node to the vector
@@ -312,27 +342,34 @@ bool Maze::has_Neighbour(const node* N) const {
  * @param node_container container, containing previous nodes and the new traversed node
  * @param dir direction to traverse
  */
-void Maze::go_Dir(node* &N, std::vector<node*> &node_container, size_t dir){
+bool Maze::go_Dir(node* &N, std::vector<node*> &node_container, size_t dir){
 
     if(dir == up && N->up->up != nullptr && N->up->up->visited == false){
         N->up->up->visited = true; // node
         N->up->visited = true; // passage
         node_container.push_back(N->up->up);
+        return true;
     }
     else if(dir == right && N->right->right != nullptr && N->right->right->visited == false){
         N->right->right->visited = true;
         N->right->visited = true;
         node_container.push_back(N->right->right);
+        return true;
     }
     else if(dir == down && N->down->down != nullptr && N->down->down->visited == false){
         N->down->down->visited = true;
         N->down->visited = true;
         node_container.push_back(N->down->down);
+        return true;
     }
     else if(dir == left && N->left->left != nullptr && N->left->left->visited == false){
         N->left->left->visited = true;
         N->left->visited = true;
         node_container.push_back(N->left->left);
+        return true;
+    }
+    else {
+        return false;
     }
 }
 
@@ -344,20 +381,23 @@ void Maze::go_Dir(node* &N, std::vector<node*> &node_container, size_t dir){
  * Walls are represented by "██", showing up as white in the cmd.
  * Passages are represented by "  " two spaces, showing up as black in the cmd.
  * Solution is represented by "⬤ " blue balls, leading to the end.
+ * 
+ * @param bool console, if it prints to console or not, changes format accordingly
  */
-void Maze::print() const{
+void Maze::print(bool console) const{
     node* kolumn = head;
     node* row = head;
     while(row != nullptr){
         while(kolumn != nullptr){
             if (!kolumn->visited){
-                if (kolumn == cornerNode(begin)){
-                    // std::cout << "S ";
-                    std::cout << "\033[1;32m⚑ \033[0m";
+                if (kolumn == edge_Node(begin)){
+                    if (console){std::cout << "\033[1;32m⚑ \033[0m";}
+                    else{std::cout << "S ";}
+                    
                 }
-                else if ( kolumn == cornerNode(end)){
-                    // std::cout << "E ";
-                    std::cout << "\033[1;31m⚑ \033[0m";
+                else if ( kolumn == edge_Node(end)){
+                    if (console){std::cout << "\033[1;31m⚑ \033[0m";}
+                    else {std::cout << "E ";}
                     
                 }
                 else {
@@ -366,8 +406,8 @@ void Maze::print() const{
             }
             else {
                     if(kolumn->way){
-                        // std::cout << "* ";
-                        std::cout << "\033[1;94m⬤ \033[0m";
+                        if (console){std::cout << "\033[1;94m⬤ \033[0m";}
+                        else {std::cout << "* ";}
                     }
                     else{
                         std::cout << "  ";
@@ -387,6 +427,6 @@ void Maze::print() const{
  * @brief Sets the surround value to the circumference of the maze accordingly
  */
 void Maze::set_Surround() {
-    surround = (size_X - 1) + ((((size_Y-1) / 2)-2)*2);
-    if ( surround == 0){surround = 1;}
+    surround = (size_X - 1) + ((((size_Y-1)/2)-2)*2);
+    if ( surround == 0){surround = 1;} // exeption if its an 3x3 maze with only one node.
 }

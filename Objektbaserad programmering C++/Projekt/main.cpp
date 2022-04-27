@@ -26,7 +26,9 @@ int main(int argc, char** argv)
                 std::pair<size_t, size_t> dim = get_Dimensions(v);
                 Maze maze(dim.first,get_Dimensions(v).second);
                 maze.set(v);
-                if (!maze.solve()){exit(1);}
+                if (!maze.solve()){std::cerr << "Cannot solve maze, invalid maze..." << std::endl; return 0; }
+                maze.print(false);
+                maze = maze;
                 maze.print(false);
             }
             else {

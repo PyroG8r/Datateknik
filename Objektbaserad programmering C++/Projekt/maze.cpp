@@ -1,23 +1,35 @@
 #include "maze.h"
 
-Maze::Maze(){   // default generate 11 x 11 maze;
+/**
+ * @brief Construct a new Maze:: Maze object
+ *  - Default contructor, with the dimensions 11 x 11.
+ */
+Maze::Maze(){
     begin = nullptr;
     end = nullptr;
     head = nullptr;
     this->size_X = 11;
     this->size_Y = 11;
+    is_Random_Begin_End = false;  // fixed begining and end
     set_Surround();
 
     srand (time(NULL));
     structure();
 }
 
-Maze::Maze(size_t size_X, size_t size_Y){   // parametiserad konstruktor som tar in x & y 
+/**
+ * @brief Construct a new Maze:: Maze object 
+ *  - Parameterized contructor
+ * @param size_X Size of the maze - X axis
+ * @param size_Y Size of the maze - Y axis
+ */
+Maze::Maze(size_t size_X, size_t size_Y){
     begin = nullptr;
     end = nullptr;
     head = nullptr;
     this->size_X = size_X;
     this->size_Y = size_Y;
+    is_Random_Begin_End = true;   // random begining and end
     set_Surround();
 
     srand (time(NULL));
@@ -38,6 +50,72 @@ Maze::~Maze(){
         row = row->down;
         kolumn = row;
     }
+}
+
+Maze::Maze(const Maze &src){
+    begin = nullptr;
+    end = nullptr;
+    head = nullptr;
+
+
+    srand (time(NULL));
+    
+    *this = src;
+}
+
+/**
+ * @brief Assignment operator
+ * 
+ * @param rhs right hand side
+ * @return Maze& left hand side, it self
+ */
+Maze& Maze::operator=(const Maze &rhs){
+    if (this != &rhs){  // protects from self assignment
+    std::vector<std::string> v;
+    std::string s;
+    node* kolumn = head;
+    node* row = head;
+    node* it;
+    while(row != nullptr){
+        while(kolumn != nullptr){
+            it = kolumn;
+            kolumn = kolumn->right;
+            delete it;
+        }
+        row = row->down;
+        kolumn = row;
+    }
+    size_X = rhs.size_X;
+    size_Y = rhs.size_Y;
+    structure();
+    row = rhs.head;
+    kolumn = row;
+    while(row != nullptr){
+        while(kolumn != nullptr){
+            if (!kolumn->visited){
+                if (kolumn == rhs.edge_Node(rhs.begin)){
+                    s.append("s");
+                }
+                else if ( kolumn == rhs.edge_Node(rhs.end)){
+                    s.append("e");
+                }
+                else {
+                    s.append("x");
+                }
+            }
+            else {
+                s.append(" ");
+            }
+            kolumn = kolumn->right;
+        }
+        v.push_back(s);
+        s.clear();
+        row = row->down;
+        kolumn = row;
+    }
+    set(v);
+    }
+    return *this;
 }
 
 Maze::node::node(){ 
@@ -87,16 +165,12 @@ void Maze::structure(){
         kolumn = kolumn->right;
         row = kolumn;
     }
-    size_t begin_pos, end_pos;
-    begin_pos = rand() % surround;
-    end_pos = rand() % surround;
-    while(begin_pos == end_pos){    //så länge begin och end är lika, gör en ny end;
-        if(size_X == 3 && size_Y == 3){break;} // undantag om det är en 3x3 labyrint
-        end_pos = rand() % surround;
-    }
 
-    begin = getNodeFromSurround(begin_pos);
-    end = getNodeFromSurround(end_pos);
+    if (is_Random_Begin_End) { random_Begin_End(); }
+    else {
+        begin = get_Node_From_Surround(2);
+        end = get_Node_From_Surround(10);
+    }
 }
 
 /**
@@ -189,7 +263,7 @@ void Maze::set(std::vector<std::string> v){
             }
             else {
                 if (c == 'e' || c == 'E'){
-                    if (nr_end > 1){std::cerr << "Not a valid maze, too many endings..." << std::endl; exit(0);}
+                    if (nr_end >= 1){std::cerr << "Not a valid maze, too many endings..." << std::endl; exit(0);}
                     if(kolumn->up == nullptr){end = kolumn->down; }
                     else if(kolumn->right == nullptr){end = kolumn->left; }
                     else if(kolumn->down == nullptr){end = kolumn->up; }
@@ -198,7 +272,7 @@ void Maze::set(std::vector<std::string> v){
                     nr_end++;
                 }
                 else if (c == 's' || c == 'S'){
-                    if (nr_begin > 1){std::cerr << "Not a valid maze, too many starts..." << std::endl; exit(0);}
+                    if (nr_begin >= 1){std::cerr << "Not a valid maze, too many starts..." << std::endl; exit(0);}
                     if(kolumn->up == nullptr){begin = kolumn->down; }
                     else if(kolumn->right == nullptr){begin = kolumn->left; }
                     else if(kolumn->down == nullptr){begin = kolumn->up; }
@@ -299,21 +373,13 @@ Maze::node* Maze::edge_Node(node* N) const{
  * @param surround the circumference of the maze
  * @return Maze::node* 
  */
-Maze::node* Maze::getNodeFromSurround(size_t surround){
+Maze::node* Maze::get_Node_From_Surround(size_t surround){
     node* N = head->down->right;
     for(size_t i = 0; i < surround; i++){
-        if (N->up->up == nullptr && N->right->right != nullptr){
-            N = N->right->right;
-        }
-        else if (N->right->right == nullptr && N->down->down != nullptr){
-            N = N->down->down;
-        }
-        else if (N->down->down == nullptr && N->left->left != nullptr){
-            N = N->left->left;
-        }
-        else if (N->left->left == nullptr && N->up->up != nullptr){
-            N = N->up->up;
-        }
+        if (N->up->up == nullptr && N->right->right != nullptr){ N = N->right->right; }
+        else if (N->right->right == nullptr && N->down->down != nullptr){ N = N->down->down; }
+        else if (N->down->down == nullptr && N->left->left != nullptr){ N = N->left->left; }
+        else if (N->left->left == nullptr && N->up->up != nullptr){ N = N->up->up; }
     }
     return N;
 }
@@ -423,10 +489,29 @@ void Maze::print(bool console) const{
     }
 
 }
+
 /**
  * @brief Sets the surround value to the circumference of the maze accordingly
  */
 void Maze::set_Surround() {
     surround = (size_X - 1) + ((((size_Y-1)/2)-2)*2);
     if ( surround == 0){surround = 1;} // exeption if its an 3x3 maze with only one node.
+}
+
+/**
+ * @brief Sets begining and end node randomly, determined by the circumference
+ * 
+ */
+void Maze::random_Begin_End(){
+
+    size_t begin_pos, end_pos;
+    begin_pos = rand() % surround;
+    end_pos = rand() % surround;
+    while(begin_pos == end_pos){    //så länge begin och end är lika, gör en ny end;
+        if(size_X == 3 && size_Y == 3){break;} // undantag om det är en 3x3 labyrint
+        end_pos = rand() % surround;
+    }
+
+    begin = get_Node_From_Surround(begin_pos);
+    end = get_Node_From_Surround(end_pos);
 }

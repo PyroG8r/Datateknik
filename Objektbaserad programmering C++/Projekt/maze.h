@@ -42,14 +42,16 @@ class Maze{
     node* end;       // end of the maze
     size_t surround;
     size_t size_X, size_Y;
+    bool is_Random_Begin_End; // If begin and ending should generate randomly
 
-    void set_Surround();
     void structure();
+    void set_Surround();
+    void random_Begin_End();
 
     bool go_Dir(node* &N, std::vector<node*> &node_container, size_t dir);
 
     node* edge_Node(node* N) const;
-    node* getNodeFromSurround(size_t surround);
+    node* get_Node_From_Surround(size_t surround);
 
     bool has_Neighbour(const node*) const;
 };

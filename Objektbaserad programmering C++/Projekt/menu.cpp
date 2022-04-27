@@ -11,7 +11,7 @@ void menu()
     while (true)
     {
         std::cout << "What do you want to do?" << std::endl;
-        std::cout << "1. Generate a maze \n2. Generate a maze with specified diminsions \n3. Quit" << std::endl;
+        std::cout << "1. Generate a default maze \n2. Generate a maze with specified diminsions \n3. Quit" << std::endl;
         option = input_Option(1, 3);
         
         switch(option)
@@ -96,13 +96,14 @@ void menu()
 
 void welcome_Screen()
 {
-    std::cout << "██████████████████████████" << std::endl;
-    std::cout << "██                      ██" << std::endl;
-    std::cout << "██    --------------    ██" << std::endl;
-    std::cout << "██        Welcome       ██" << std::endl;
-    std::cout << "██    --------------    ██" << std::endl;
-    std::cout << "██                      ██" << std::endl;
-    std::cout << "██████████████████████████" << std::endl << std::endl;
+    std::cout << "/----------------------------------------------\\" << std::endl;
+    std::cout << " __    __       _                              " << std::endl;
+    std::cout << "/ / /\\ \\ \\ ___ | |  ___  ___   _ __ ___    ___ " << std::endl;
+    std::cout << "\\ \\/  \\/ // _ \\| | / __|/ _ \\ | '_ ` _ \\  / _ \\" << std::endl;
+    std::cout << " \\  /\\  /|  __/| || (__| (_) || | | | | ||  __/" << std::endl;
+    std::cout << "  \\/  \\/  \\___||_| \\___|\\___/ |_| |_| |_| \\___|" << std::endl;
+    std::cout << "                                               " << std::endl;
+    std::cout << "\\----------------------------------------------/" << std::endl;
 }
 
 size_t input_Dim()

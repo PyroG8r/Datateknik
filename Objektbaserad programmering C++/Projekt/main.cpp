@@ -1,20 +1,10 @@
-#include <iostream>
 #include "maze.h"
 #include "menu.h"
-#include <limits>
-#include <algorithm>
-#include <fstream>
-#include <stdio.h>
-// #include <utility>
-
-
 
 /**
  * Frågor till najeb...
  * 
  * Inläsning från labyrint, där det är ett x på en plats där det ska vara en nod.
- * 
- * CLI argument fel, inget --solve ledet till fel i utskrifter.
  * 
  * Ingen tilldeling eller copykontruktor.
  * 
@@ -45,9 +35,9 @@ int main(int argc, char** argv)
         }
     }
     else {
+        if(!isatty(STDIN_FILENO)){ std::cerr << "Invalid arguments\nUse \"--solve\" when trying to read a maze from a file..." << std::endl; return 0; } // if there are no arguments but the terminal is associated with a file, exit
         menu();
     }
-
     return 0;
 }
 

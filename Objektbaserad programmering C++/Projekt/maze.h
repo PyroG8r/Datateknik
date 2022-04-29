@@ -54,6 +54,8 @@ class Maze{
     node* get_Node_From_Surround(size_t surround);
 
     bool has_Neighbour(const node*) const;
+
+    void remove_Maze();
 };
 
 #endif

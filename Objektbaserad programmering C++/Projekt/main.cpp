@@ -28,8 +28,6 @@ int main(int argc, char** argv)
                 maze.set(v);
                 if (!maze.solve()){std::cerr << "Cannot solve maze, invalid maze..." << std::endl; return 0; }
                 maze.print(false);
-                maze = maze;
-                maze.print(false);
             }
             else {
                 std::cout << "error" << std::endl;

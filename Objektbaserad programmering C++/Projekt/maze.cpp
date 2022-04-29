@@ -38,18 +38,7 @@ Maze::Maze(size_t size_X, size_t size_Y){
 
 Maze::~Maze(){
 
-    node* kolumn = head;
-    node* row = head;
-    node* it;
-    while(row != nullptr){
-        while(kolumn != nullptr){
-            it = kolumn;
-            kolumn = kolumn->right;
-            delete it;
-        }
-        row = row->down;
-        kolumn = row;
-    }
+    remove_Maze();
 }
 
 Maze::Maze(const Maze &src){
@@ -71,49 +60,34 @@ Maze::Maze(const Maze &src){
  */
 Maze& Maze::operator=(const Maze &rhs){
     if (this != &rhs){  // protects from self assignment
-    std::vector<std::string> v;
-    std::string s;
-    node* kolumn = head;
-    node* row = head;
-    node* it;
-    while(row != nullptr){
-        while(kolumn != nullptr){
-            it = kolumn;
-            kolumn = kolumn->right;
-            delete it;
-        }
-        row = row->down;
+        std::vector<std::string> v;
+        std::string s;
+        node* kolumn;
+        node* row;
+        remove_Maze();
+        size_X = rhs.size_X;
+        size_Y = rhs.size_Y;
+        structure();
+        row = rhs.head;
         kolumn = row;
-    }
-    size_X = rhs.size_X;
-    size_Y = rhs.size_Y;
-    structure();
-    row = rhs.head;
-    kolumn = row;
-    while(row != nullptr){
-        while(kolumn != nullptr){
-            if (!kolumn->visited){
-                if (kolumn == rhs.edge_Node(rhs.begin)){
-                    s.append("s");
-                }
-                else if ( kolumn == rhs.edge_Node(rhs.end)){
-                    s.append("e");
+        while(row != nullptr){
+            while(kolumn != nullptr){
+                if (!kolumn->visited){
+                    if (kolumn == rhs.edge_Node(rhs.begin)){ s.append("s"); }
+                    else if ( kolumn == rhs.edge_Node(rhs.end)){ s.append("e"); }
+                    else { s.append("x"); }
                 }
                 else {
-                    s.append("x");
+                    s.append(" ");
                 }
+                kolumn = kolumn->right;
             }
-            else {
-                s.append(" ");
-            }
-            kolumn = kolumn->right;
+            v.push_back(s);
+            s.clear();
+            row = row->down;
+            kolumn = row;
         }
-        v.push_back(s);
-        s.clear();
-        row = row->down;
-        kolumn = row;
-    }
-    set(v);
+        set(v);
     }
     return *this;
 }
@@ -136,9 +110,9 @@ Maze::node::node(){
  * size of the matrix is determined by the maze members size_X and size_Y 
  */
 void Maze::structure(){
-    node* kolumn = new node();
+    head = new node();
     node* row;
-    head = kolumn;
+    node* kolumn = head;
     for(size_t i = 0; i < size_X - 1; i++){ // expands the structure in the x axis - to the right                                   
         node* N = new node();
         kolumn->right = N;
@@ -471,13 +445,13 @@ void Maze::print(bool console) const{
                 }
             }
             else {
-                    if(kolumn->way){
-                        if (console){std::cout << "\033[1;94m⬤ \033[0m";}
-                        else {std::cout << "* ";}
-                    }
-                    else{
-                        std::cout << "  ";
-                    }
+                if(kolumn->way){
+                    if (console){std::cout << "\033[1;94m⬤ \033[0m";}
+                    else {std::cout << "* ";}
+                }
+                else{
+                    std::cout << "  ";
+                }
                 
             }
             kolumn = kolumn->right;
@@ -514,4 +488,19 @@ void Maze::random_Begin_End(){
 
     begin = get_Node_From_Surround(begin_pos);
     end = get_Node_From_Surround(end_pos);
+}
+
+void Maze::remove_Maze(){
+    node* kolumn = head;
+    node* row = head;
+    node* it;
+    while(row != nullptr){
+        while(kolumn != nullptr){
+            it = kolumn;
+            kolumn = kolumn->right;
+            delete it;
+        }
+        row = row->down;
+        kolumn = row;
+    }
 }

@@ -11,7 +11,7 @@ void menu()
     while (true)
     {
         std::cout << "What do you want to do?" << std::endl;
-        std::cout << "1. Generate a default maze \n2. Generate a maze with specified diminsions \n3. Quit" << std::endl;
+        std::cout << "1. Generate a default maze \n2. Generate a maze with specified dimensions \n3. Quit" << std::endl;
         option = input_Option(1, 3);
         
         switch(option)
@@ -112,7 +112,7 @@ size_t input_Dim()
     getline(std::cin, str);
     // std::cin >> str;
     
-    while (!IsDigits(str) || !is_Odd(stoi(str)) || stoi(str) < 3){
+    while (!IsDigits(str) || str.length() == 0 || !is_Odd(stoi(str)) || stoi(str) < 3){
         std::cout << "You must input a positive odd number over three...";
         getline(std::cin, str);
     }
@@ -123,7 +123,7 @@ size_t input_Positive_Number()
 {
     std::string str;
     getline(std::cin, str);
-    while (!IsDigits(str))
+    while (!IsDigits(str) || str.length() == 0)
     {
         std::cout << "You must input a positive number...";
         getline(std::cin, str);
@@ -134,7 +134,7 @@ size_t input_Option(size_t from, size_t to)
 {
     std::string str;
     getline(std::cin, str);
-    while (!IsDigits(str) || stoi(str) > to || stoi(str) < from)
+    while (!IsDigits(str) || str.length() == 0 || stoi(str) > to || stoi(str) < from)
     {
         std::cout << "Välj ett av alternativen, "<< from << "-" << to <<"...\n";
         getline(std::cin, str);

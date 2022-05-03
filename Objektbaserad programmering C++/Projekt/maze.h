@@ -21,7 +21,7 @@ class Maze{
     void set(std::vector<std::string>);
     void generate_dfs(size_t delay);     //generate maze via dfs
     void generate_bfs(size_t delay);     //generate maze via bfs
-    bool solve();
+    bool solve(size_t delay);
 
     void print(bool console) const; //print
 

@@ -140,9 +140,9 @@ void Maze::structure(){
         row = kolumn;
     }
 
-    if (is_Random_Begin_End) { random_Begin_End(); }
+    if (is_Random_Begin_End) { random_Begin_End(); }    // random start and end positions
     else {
-        begin = get_Node_From_Surround(2);
+        begin = get_Node_From_Surround(2); // fized start and end positions
         end = get_Node_From_Surround(10);
     }
 }
@@ -268,8 +268,9 @@ void Maze::set(std::vector<std::string> v){
 /**
  * @brief Solves the maze using the DFS algorithm, 
  *  
+ * @param delay amount of delay to use when animating
  */
-bool Maze::solve() {
+bool Maze::solve(size_t delay) {
     node *path = begin;
     path->path = true;
     std::vector<node*> path_stack;
@@ -312,6 +313,11 @@ bool Maze::solve() {
     if (path_stack.size() == 0){return false;}
     for (node *n : path_stack) {    //when finished the stack "path_stack" contains the way to the finish...
         n->way = true;              //sets the correct atribute to all the nodes in the stack
+        if (!delay == 0){
+            system("clear");
+            print(true);
+            usleep(delay);
+        }
     }
     return true;
 }

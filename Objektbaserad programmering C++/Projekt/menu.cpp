@@ -1,93 +1,66 @@
 #include "maze.h"
 #include "menu.h"
 
-void menu()
-{
+void menu(){
     size_t option;
-    size_t delay;
+    size_t delay = 0;
+    size_t size_X = 11 , size_Y = 11;
+    std::string generation_algorthm = "DFS";
     welcome_Screen();
-
-
-    while (true)
-    {
-        std::cout << "What do you want to do?" << std::endl;
-        std::cout << "1. Generate a default maze \n2. Generate a maze with specified dimensions \n3. Quit" << std::endl;
-        option = input_Option(1, 3);
-        
+    while (option != 6){
+        std::cout << "What do you want to do? Select input option (1-6) \n"; 
+        std::cout << "1. Generate a default maze, 11 x 11 with fixed begin & end \n";
+        std::cout << "2. Generate a maze with specified dimensions \n";
+        std::cout << "3. Specify dimensions, currently: " << size_X << " x " << size_Y << ".\n";
+        std::cout << "4. Select generation algorithm: " << generation_algorthm << ".\n";
+        std::cout << "5. Enter amount of delay to use when animating the generation of the maze: " << delay << "ms.\n";
+        std::cout << "6. Quit... \n";
+        option = input_Option(1, 6);
         switch(option)
         {
         case 1:
         {
             Maze maze;
-            std::cout << "1. Generate a maze using the DFS algorithm \n2. Generate a maze using the BFS algorithm \n3. Quit" << std::endl;
-            option = input_Option(1, 3);
-            switch (option)
-            {
-            case 1:
-                std::cout << "Do you want to animate the generation? \nEnter the amount of delay to use (recomended 0-10000 ms)" << std::endl;
-                delay = input_Positive_Number();
-                maze.generate_dfs(delay);
-                maze.solve();
-                system("clear");
-                maze.print(true);
-                break;
-
-            case 2:
-                std::cout << "Do you want to animate the generation? \nEnter the amount of delay to use (recomended 0-10000 ms)" << std::endl;
-                delay = input_Positive_Number();
-                maze.generate_bfs(delay);
-                maze.solve();
-                system("clear");
-                maze.print(true);
-                break;
-            case 3:
-                exit(0);
-            default:
-                break;
-            }
+            maze.generate_dfs(delay);
+            maze.solve(delay);
+            system("clear");
+            maze.print(true);
             break;
         }
-        case 2:
-        {
+        case 2:{
+            Maze maze(size_X, size_Y);
+            if (generation_algorthm == "DFS") { maze.generate_dfs(delay); }
+            else if (generation_algorthm == "BFS") { maze.generate_bfs(delay); }
+            maze.solve(delay);
+            system("clear");
+            maze.print(true);
+            break;
+        }
+        case 3:{
             std::cout << "Enter the dimensions of the maze (must be odd numbers) ";
-            size_t size_X, size_Y;
-
             std::cout << "Width: ";
             size_X = input_Dim();
             std::cout << "Height: ";
             size_Y = input_Dim();
-            Maze maze(size_X, size_Y);
-
-            std::cout << "1. Generate a maze using the DFS algorithm \n2. Generate a maze using the BFS algorithm \n3. Quit" << std::endl;
-            option = input_Option(1, 3);
-            switch (option)
-            {
-            case 1:
-                std::cout << "Do you want to animate the generation? \nEnter the amount of delay to use (recomended 0-10000 ms)" << std::endl;
-                delay = input_Positive_Number();
-                maze.generate_dfs(delay);
-                maze.solve();
-                system("clear");
-                maze.print(true);
-                break;
-
-            case 2:
-                std::cout << "Do you want to animate the generation? \nEnter the amount of delay to use (recomended 0-10000 ms)" << std::endl;
-                delay = input_Positive_Number();
-                maze.generate_bfs(delay);
-                maze.solve();
-                system("clear");
-                maze.print(true);
-                break;
-            case 3:
-                exit(0);
-            default:
-                break;
-            }
+            std::cout << std::endl;
             break;
         }
-        case 3:
+        case 4:{
+            std::cout << "What algorithm to use when generating the maze: \n1. DFS\n2. BFS\n";
+            option = input_Option(1, 2);
+            if (option == 1){generation_algorthm = "DFS";}
+            else {generation_algorthm = "BFS";}
+            break;
+        }
+        case 5:{
+            std::cout << "Enter amount of delay to use when animating the generation of the maze: " << delay << ".\n";
+            delay = input_Positive_Number();
+            break;
+        }
+        case 6:{
+            std::cout << "Quitting... \n";
             exit(0);
+        }
         default:
             break;
         }

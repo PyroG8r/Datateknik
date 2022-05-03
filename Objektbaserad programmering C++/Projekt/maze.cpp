@@ -324,27 +324,20 @@ bool Maze::solve(size_t delay) {
 
 
 /**
- * @brief Given a node that is adjacent to a edge, return the edge node.
- * This is used to print out start and finish, making it look like its an
+ * @brief Given a node that is adjacent to an edge, return the edge node, the entrance.
+ * This is used to print out start and finish, making it look like there's an
  * opening in the edge of the maze
- * @param N Given node
- * @return Node* edge node
+ * @param N Node adjacent to edge
+ * @return Node* entrance
  */
 Maze::node* Maze::edge_Node(node* N) const{
-    node* p;
-    if(N == begin){
-        if(N->up->up == nullptr){ p = N->up; }
-        else if(N->down->down == nullptr){ p = N->down; }
-        else if(N->left->left == nullptr){ p = N->left; }
-        else if(N->right->right == nullptr){ p = N->right; }
-    }
-    else if (N == end){
-        if(N->right->right == nullptr){ p = N->right; }
-        else if(N->left->left == nullptr){ p = N->left; }
-        else if(N->down->down == nullptr){ p = N->down; }
-        else if(N->up->up == nullptr){ p = N->up; }
-    }
-    return p;
+    node* entrance;
+    if(N->left->left == nullptr){ entrance = N->left; }
+    else if(N->right->right == nullptr){ entrance = N->right; }
+    else if(N->up->up == nullptr){ entrance = N->up; }
+    else if(N->down->down == nullptr){ entrance = N->down; }
+    
+    return entrance;
 }
 
 /**

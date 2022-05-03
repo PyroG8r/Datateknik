@@ -48,6 +48,8 @@ class Maze{
     void set_Surround();
     void random_Begin_End();
 
+    void set_unvisited();
+
     bool go_Dir(node* &N, std::vector<node*> &node_container, size_t dir);
 
     node* edge_Node(node* N) const;

@@ -10,11 +10,12 @@ Maze::Maze(){
     head = nullptr;
     this->size_X = 11;
     this->size_Y = 11;
-    is_Random_Begin_End = false;  // fixed begining and end
     set_Surround();
 
     srand (time(NULL));
     structure();
+    begin = get_Node_From_Surround(2); // fixed start and end positions
+    end = get_Node_From_Surround(10);
 }
 
 /**
@@ -29,18 +30,27 @@ Maze::Maze(size_t size_X, size_t size_Y){
     head = nullptr;
     this->size_X = size_X;
     this->size_Y = size_Y;
-    is_Random_Begin_End = true;   // random begining and end
     set_Surround();
 
     srand (time(NULL));
     structure();
+    random_Begin_End();
 }
 
+/**
+ * @brief Destroy the Maze:: Maze object
+ * 
+ */
 Maze::~Maze(){
 
     remove_Maze();
 }
 
+/**
+ * @brief Copy contructor for the maze object
+ * 
+ * @param src 
+ */
 Maze::Maze(const Maze &src){
     begin = nullptr;
     end = nullptr;
@@ -64,13 +74,13 @@ Maze& Maze::operator=(const Maze &rhs){
         std::string s;
         node* kolumn;
         node* row;
-        remove_Maze();
+        remove_Maze();  // removes lhs
         size_X = rhs.size_X;
         size_Y = rhs.size_Y;
         structure();
         row = rhs.head;
         kolumn = row;
-        while(row != nullptr){
+        while(row != nullptr){  // creates a vector with strings representing rhs
             while(kolumn != nullptr){
                 if (!kolumn->visited){
                     if (kolumn == rhs.edge_Node(rhs.begin)){ s.append("s"); }
@@ -87,7 +97,7 @@ Maze& Maze::operator=(const Maze &rhs){
             row = row->down;
             kolumn = row;
         }
-        set(v);
+        set(v);     // sets lhs to the vector
     }
     return *this;
 }
@@ -111,8 +121,8 @@ Maze::node::node(){
  */
 void Maze::structure(){
     head = new node();
-    node* row;
     node* kolumn = head;
+    node* row = head;
     for(size_t i = 0; i < size_X - 1; i++){ // expands the structure in the x axis - to the right                                   
         node* N = new node();
         kolumn->right = N;
@@ -138,12 +148,6 @@ void Maze::structure(){
         }
         kolumn = kolumn->right;
         row = kolumn;
-    }
-
-    if (is_Random_Begin_End) { random_Begin_End(); }    // random start and end positions
-    else {
-        begin = get_Node_From_Surround(2); // fized start and end positions
-        end = get_Node_From_Surround(10);
     }
 }
 
@@ -271,9 +275,9 @@ void Maze::set(std::vector<std::string> v){
  * @param delay amount of delay to use when animating
  */
 bool Maze::solve(size_t delay) {
+    std::vector<node*> path_stack;
     node *path = begin;
     path->path = true;
-    std::vector<node*> path_stack;
     path_stack.push_back(path);
 
     while (!path_stack.empty()){
@@ -310,7 +314,7 @@ bool Maze::solve(size_t delay) {
             else { path_stack.resize(path_stack.size() - 2); } // remove last 2 elements
         }
     }
-    if (path_stack.size() == 0){return false;}
+    if (path_stack.size() == 0){return false;}  // if no solution if found
     for (node *n : path_stack) {    //when finished the stack "path_stack" contains the way to the finish...
         n->way = true;              //sets the correct atribute to all the nodes in the stack
         if (!delay == 0){

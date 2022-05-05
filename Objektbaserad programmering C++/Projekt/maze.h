@@ -42,7 +42,6 @@ class Maze{
     node* end;       // end of the maze
     size_t surround;
     size_t size_X, size_Y;
-    bool is_Random_Begin_End; // If begin and ending should generate randomly
 
     void structure();
     void set_Surround();

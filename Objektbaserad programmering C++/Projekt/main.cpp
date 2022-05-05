@@ -30,7 +30,7 @@ int main(int argc, char** argv)
                 maze.print(false);
             }
             else {
-                std::cout << "error" << std::endl;
+                std::cerr << "Invalid arguments\nUse \"--solve\" when trying to read a maze from a file..." << std::endl;
             }
         }
     }

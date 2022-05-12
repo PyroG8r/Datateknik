@@ -1,22 +1,19 @@
+/*
+    Emil Jons
+    2022-05-11
+    Objektbaserad programmering
+    Lab 2 - Linked list
+    Betyg A
+    Körs i linux
+*/
 #include "maze.h"
 #include "menu.h"
-
-/**
- * Frågor till najeb...
- * 
- * Inläsning från labyrint, där det är ett x på en plats där det ska vara en nod.
- * 
- * Ingen tilldeling eller copykontruktor.
- * 
- * Start och på samma plats
- * 
- * Stach eller sluts på olika plats från inläsning till utskrift
- */
 
 std::pair<size_t, size_t> get_Dimensions(std::vector<std::string>);
 std::vector<std::string> read_File();
 int main(int argc, char** argv)
 {  
+    srand(time(NULL));
     if(argc > 1) { 
         std::string argument;
         for(int i = 1; i < argc; i++) {

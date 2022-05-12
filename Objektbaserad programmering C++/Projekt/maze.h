@@ -1,4 +1,10 @@
-
+/*
+    Emil Jons
+    2022-03-28
+    Objektbaserad programmering
+    Lab 2 - Linked list
+    Betyg A
+*/
 #ifndef MAZE_H
 #define MAZE_H
 
@@ -47,14 +53,16 @@ class Maze{
     void set_Surround();
     void random_Begin_End();
 
-    void set_unvisited();
+    void set_Unvisited();
 
-    bool go_Dir(node* &N, std::vector<node*> &node_container, size_t dir);
+    void go_Dir(node* &N, std::vector<node*> &node_container, size_t dir);
+    void solve_Dir(node* &N, std::vector<node*> &node_container);
+    std::vector<size_t> get_Available_Directions(node* &N);
 
-    node* edge_Node(node* N) const;
+    node* get_Entrance(node* N) const;
     node* get_Node_From_Surround(size_t surround);
 
-    bool has_Neighbour(const node*) const;
+    bool has_Unvisited_Neighbour(node* &N);
 
     void remove_Maze();
 };

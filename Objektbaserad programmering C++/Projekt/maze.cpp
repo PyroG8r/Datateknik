@@ -47,7 +47,6 @@ Maze::Maze(size_t size_X, size_t size_Y){
  * 
  */
 Maze::~Maze(){
-
     remove_Maze();
 }
 
@@ -103,6 +102,10 @@ Maze& Maze::operator=(const Maze &rhs){
     return *this;
 }
 
+/**
+ * @brief Construct a new Maze::node::node object
+ * 
+ */
 Maze::node::node(){ 
     visited = false;
     path = false;
@@ -189,7 +192,7 @@ void Maze::generate_dfs(size_t delay){
  */
 void Maze::generate_bfs(size_t delay){
     std::vector<node*> node_queue;
-    size_t direction;
+    std::vector<size_t> v;
     node* N = begin;
     N->visited = true;
     node_queue.push_back(N);
@@ -199,7 +202,8 @@ void Maze::generate_bfs(size_t delay){
         node_queue.erase(node_queue.begin());
         if(has_Unvisited_Neighbour(N)){
             node_queue.push_back(N);
-            go_Dir(N, node_queue, get_Available_Directions(N)[rand() % 4]);
+            v = get_Available_Directions(N);
+            go_Dir(N, node_queue, v[rand() % v.size()]);
 
             if (!delay == 0){
                 system("clear");
@@ -211,7 +215,7 @@ void Maze::generate_bfs(size_t delay){
 }
 
 /**
- * @brief Solves the maze using the DFS algorithm, 
+ * @brief Solves the maze using the DFS algorithm
  *  
  * @param delay amount of delay to use when animating
  */
@@ -225,7 +229,8 @@ bool Maze::solve(size_t delay) {
         path = path_stack.back();
 
         if (path == end){ break; }  // if the path reaches the end, break
-        
+
+        //Check if the path in the direction is open, and go that direction
         else if (path->up->visited == true && !path->up->path) {
             path->up->up->path = true;
             path->up->path = true;
@@ -250,6 +255,8 @@ bool Maze::solve(size_t delay) {
             path_stack.push_back(path->left);
             path_stack.push_back(path->left->left);
         }
+
+        //If no path is found, popback
         else{
             if (path_stack.size() == 1){ path_stack.pop_back(); } //remove first element
             else { path_stack.resize(path_stack.size() - 2); } // remove last 2 elements
@@ -406,35 +413,6 @@ void Maze::go_Dir(node* &N, std::vector<node*> &node_container, size_t dir){
     }
 }
 
-
-void Maze::solve_Dir(node* &path, std::vector<node*> &path_stack){
-    if (path->up->visited == true && !path->up->path) {
-        path->up->up->path = true;
-        path->up->path = true;
-        path_stack.push_back(path->up);
-        path_stack.push_back(path->up->up);
-    }
-    else if (path->right->visited == true && !path->right->path) {
-        path->right->right->path = true;
-        path->right->path = true;
-        path_stack.push_back(path->right);
-        path_stack.push_back(path->right->right);
-    }
-    else if (path->down->visited == true && !path->down->path) {
-        path->down->down->path = true;
-        path->down->path = true;
-        path_stack.push_back(path->down);
-        path_stack.push_back(path->down->down);
-    }
-    else if (path->left->visited == true && !path->left->path) {
-        path->left->left->path = true;
-        path->left->path = true;
-        path_stack.push_back(path->left);
-        path_stack.push_back(path->left->left);
-    }
-}
-
-
 /**
  * @brief Given a node, return all available direction the node can go in. 
  * 
@@ -535,22 +513,6 @@ void Maze::remove_Maze(){
             delete it;
         }
         row = row->down;
-        kolumn = row;
-    }
-}
-
-
-void Maze::set_Unvisited(){
-    node* kolumn = head->down->right;
-    node* row = kolumn;
-    node* it;
-    while(row != nullptr){
-        while(kolumn != nullptr){
-            it = kolumn;
-            kolumn = kolumn->right->right;
-            it->visited = false;
-        }
-        row = row->down->down;
         kolumn = row;
     }
 }

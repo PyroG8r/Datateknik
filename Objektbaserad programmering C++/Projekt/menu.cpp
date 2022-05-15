@@ -16,7 +16,7 @@ void menu(){
     welcome_Screen();
     while (option != 6){
         std::cout << "What do you want to do? Select input option (1-6) \n"; 
-        std::cout << "1. Generate a default maze, 11 x 11 with fixed begin & end \n";
+        std::cout << "1. Generate a default maze, 11 x 11 with fixed begin & end (DFS) \n";
         std::cout << "2. Generate a maze with specified dimensions \n";
         std::cout << "3. Specify dimensions, currently: " << size_X << " x " << size_Y << ".\n";
         std::cout << "4. Select generation algorithm: " << generation_algorthm << ".\n";

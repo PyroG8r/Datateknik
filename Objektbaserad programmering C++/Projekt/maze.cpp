@@ -343,7 +343,7 @@ Maze::node* Maze::get_Entrance(node* N) const{
     else if(N->right->right == nullptr){ entrance = N->right; }
     else if(N->up->up == nullptr){ entrance = N->up; }
     else if(N->down->down == nullptr){ entrance = N->down; }
-    
+
     return entrance;
 }
 
@@ -443,13 +443,18 @@ std::vector<size_t> Maze::get_Available_Directions( node*& N) {
 void Maze::print(bool console) const{
     node* kolumn = head;
     node* row = head;
+    node* begin_Entrance;
+    node* end_Entrance;
     while(row != nullptr){
         while(kolumn != nullptr){
-            if (!kolumn->visited && kolumn == get_Entrance(begin)){
+            begin_Entrance = get_Entrance(begin);
+            end_Entrance = get_Entrance(end);
+            if (end_Entrance == begin_Entrance) { begin_Entrance = begin->right; } // edge case with 1x1 node
+            if (!kolumn->visited && kolumn == begin_Entrance){
                 if (console){std::cout << "\033[1;32m⚑ \033[0m";}
                 else{std::cout << "S ";}
             }
-            else if (!kolumn->visited && kolumn == get_Entrance(end)){
+            else if (!kolumn->visited && kolumn == end_Entrance){
                 if (console){std::cout << "\033[1;31m⚑ \033[0m";}
                 else {std::cout << "E ";}
             }
